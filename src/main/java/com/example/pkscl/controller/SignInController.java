@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SignInController {
 
-    private final SignInService passwordService;
+    private final SignInService signInService;
     
     @Autowired  
-    public SignInController(SignInService passwordService) {
-        this.passwordService = passwordService;
+    public SignInController(SignInService signInService) {
+        this.signInService = signInService;
     }
 
     @PostMapping(value = "/signin/student")
@@ -31,16 +31,13 @@ public class SignInController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        boolean match = passwordService.studentMatch(password, email);
+        boolean match = signInService.studentMatch(password, email);
 
         if(!match) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        // 임의로 JSON 데이터 생성
-        LinkedHashMap<String, Object> studentPresident = new LinkedHashMap<>();
-        studentPresident.put("major", "컴퓨터공학과");
-        studentPresident.put("name", "홍길동");
-        studentPresident.put("phoneNumber", "01012345678");
-        studentPresident.put("email", "test@naver.com");
+        // JSON 데이터 생성
+        String majorNumber = signInService.getStudentMajor(email)+"";
+        LinkedHashMap<String, Object> studentPresident = signInService.getPresidentInfo(majorNumber);
         LinkedHashMap<String, Object> quarter = new LinkedHashMap<>();
         LinkedHashMap<String, Object> sclData = new LinkedHashMap<>();
         sclData.put("studentPresident", studentPresident);
@@ -61,16 +58,13 @@ public class SignInController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        boolean match = passwordService.presidentMatch(password, email);
+        boolean match = signInService.presidentMatch(password, email);
 
         if(!match) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        // 임의로 JSON 데이터 생성
-        LinkedHashMap<String, Object> studentPresident = new LinkedHashMap<>();
-        studentPresident.put("major", "컴퓨터공학과");
-        studentPresident.put("name", "홍길동");
-        studentPresident.put("phoneNumber", "01012345678");
-        studentPresident.put("email", "test@naver.com");
+        // JSON 데이터 생성
+        String majorNumber = signInService.getPresidentMajor(email)+"";
+        LinkedHashMap<String, Object> studentPresident = signInService.getPresidentInfo(majorNumber);
         LinkedHashMap<String, Object> quarter = new LinkedHashMap<>();
         LinkedHashMap<String, Object> sclData = new LinkedHashMap<>();
         sclData.put("studentPresident", studentPresident);
@@ -91,7 +85,7 @@ public class SignInController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        boolean match = passwordService.adminMatch(password, id);
+        boolean match = signInService.adminMatch(password, id);
 
         if(!match) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 

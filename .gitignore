@@ -38,3 +38,4 @@ out/
 
 ### application properties###
 src/main/resources/application.properties
+src/main/resources/static/certfiles
