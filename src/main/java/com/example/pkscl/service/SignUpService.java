@@ -63,7 +63,7 @@ public class SignUpService {
     }
 
     public void fileUpload(String filename, MultipartFile file) throws Exception {
-        String path = System.getProperty("user.dir") + "/src/main/resources/static/certfiles/";
+        String path = System.getProperty("user.dir") + "/certfiles/";
         File saveFile = new File(path + filename);
         file.transferTo(saveFile);
     }
