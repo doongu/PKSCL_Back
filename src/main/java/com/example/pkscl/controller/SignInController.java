@@ -22,7 +22,7 @@ public class SignInController {
         this.signInService = signInService;
     }
 
-    @PostMapping(value = "/signin/student")
+    @PostMapping(value = "/login/student")
     public ResponseEntity<LinkedHashMap<String, Object>> studentSignIn(@RequestBody Map<String, Object> body) {
         String email = (String) body.get("email");
         String password = (String) body.get("password");
@@ -49,7 +49,7 @@ public class SignInController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/signin/president")
+    @PostMapping(value = "/login/president")
     public ResponseEntity<LinkedHashMap<String, Object>> presidentSignIn(@RequestBody Map<String, Object> body) {
         String email = (String) body.get("email");
         String password = (String) body.get("password");
@@ -76,7 +76,7 @@ public class SignInController {
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
-    @PostMapping(value = "/signin/admin")
+    @PostMapping(value = "/login/admin")
     public ResponseEntity<LinkedHashMap<String, Object>> adminSignIn(@RequestBody Map<String, Object> body) {
         String id = (String) body.get("id");
         String password = (String) body.get("password");

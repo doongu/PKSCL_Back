@@ -72,11 +72,12 @@ public class SMTPService {
                 .getSubject();
     }
 
-    public Integer studentTempPassword(String email){
+    public Integer studentTempPassword(String email, String name, String studentId){
 
         // 이메일로 사용자 검색
         Optional<Student> student = studentRepository.findByEmail(email).stream().findFirst();
         if (!student.isPresent()) return -1;
+        if (!student.get().getName().equals(name) || !student.get().getStudentid().equals(studentId)) return -2;
 
         // 임시 비밀번호 숫자 6자리로 생성
         String tempPassword = "PKSCL";
@@ -95,11 +96,12 @@ public class SMTPService {
         return 1;
     }
     
-    public Integer presidentTempPassword(String email){
+    public Integer presidentTempPassword(String email, String name, String studentId){
 
         // 이메일로 사용자 검색
         Optional<President> president = presidentRepository.findByEmail(email).stream().findFirst();
         if (!president.isPresent()) return -1;
+        if (!president.get().getName().equals(name) || !president.get().getStudentid().equals(studentId)) return -2;
 
         // 임시 비밀번호 숫자 6자리로 생성
         String tempPassword = "PKSCL";

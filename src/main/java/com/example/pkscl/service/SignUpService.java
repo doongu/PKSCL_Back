@@ -7,7 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.example.pkscl.domain.major.Major;
 import com.example.pkscl.domain.member.President;
 import com.example.pkscl.domain.member.Student;
 import com.example.pkscl.repository.MajorRepository;
@@ -66,9 +68,9 @@ public class SignUpService {
         file.transferTo(saveFile);
     }
 
-    // majorstatus가 approval인 major의 majorname 목록 반환
+    // major의 majorname 목록 반환
     public List<String> getMajorList() {
-        List<String> majorList = majorRepository.findByMajorstatus("approval").stream().map(major -> major.getMajorname()).collect(java.util.stream.Collectors.toList());
+        List<String> majorList = majorRepository.findAll().stream().map(Major::getMajorname).collect(Collectors.toList());
         return majorList;
     }
 }
