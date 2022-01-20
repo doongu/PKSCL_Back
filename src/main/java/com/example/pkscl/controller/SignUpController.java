@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.example.pkscl.domain.member.President;
 import com.example.pkscl.domain.member.PresidentModel;
@@ -28,7 +29,7 @@ public class SignUpController {
     }
 
     @PostMapping(value = "/signup/student")
-    public ResponseEntity<Void> signUpStudent(@ModelAttribute StudentModel studentModel, MultipartFile certFile) throws Exception {
+    public ResponseEntity<Map<String,Object>> signUpStudent(@ModelAttribute StudentModel studentModel, MultipartFile certFile) throws Exception {
 
         Student student = new Student();
         student.setEmail(studentModel.getEmail());
@@ -48,13 +49,17 @@ public class SignUpController {
         }
 
         signUpService.fileUpload(filename+ext, certFile);
-        signUpService.signUpStudent(student);
+        if(!signUpService.signUpStudent(student)) {
+            Map<String,Object> errorMsg = new LinkedHashMap<>();
+            errorMsg.put("errorMessage", "이메일 인증이 완료되지 않았습니다.");
+            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/signup/president")
-    public ResponseEntity<Void> signUpPresident(@ModelAttribute PresidentModel presidentModel, MultipartFile certFile) throws Exception {
+    public ResponseEntity<Map<String,Object>> signUpPresident(@ModelAttribute PresidentModel presidentModel, MultipartFile certFile) throws Exception {
 
         President president = new President();
         president.setEmail(presidentModel.getEmail());
@@ -75,7 +80,11 @@ public class SignUpController {
         }
 
         signUpService.fileUpload(filename+ext,certFile);
-        signUpService.signUpPresident(president);
+        if(!signUpService.signUpPresident(president)) {
+            Map<String,Object> errorMsg = new LinkedHashMap<>();
+            errorMsg.put("errorMessage", "이메일 인증이 완료되지 않았습니다.");
+            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

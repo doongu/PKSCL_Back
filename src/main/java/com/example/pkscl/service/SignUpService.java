@@ -12,7 +12,11 @@ import java.util.stream.Collectors;
 import com.example.pkscl.domain.major.Major;
 import com.example.pkscl.domain.member.President;
 import com.example.pkscl.domain.member.Student;
+import com.example.pkscl.domain.temp.PresidentCertemail;
+import com.example.pkscl.domain.temp.StudentCertemail;
+import com.example.pkscl.repository.StudentCertemailRepository;
 import com.example.pkscl.repository.MajorRepository;
+import com.example.pkscl.repository.PresidentCertemailRepository;
 import com.example.pkscl.repository.PresidentRepository;
 import com.example.pkscl.repository.StudentRepository;
 
@@ -21,27 +25,37 @@ public class SignUpService {
 
     private StudentRepository studentRepository;
     private PresidentRepository presidentRepository;
+    private StudentCertemailRepository studentCertemailRepository;
+    private PresidentCertemailRepository presidentCertemailRepository;
     private MajorRepository majorRepository;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SignUpService(StudentRepository studentRepository, PresidentRepository presidentRepository, MajorRepository majorRepository, PasswordEncoder passwordEncoder) {
+    public SignUpService(StudentRepository studentRepository, PresidentRepository presidentRepository, StudentCertemailRepository studentCertemailRepository, PresidentCertemailRepository presidentCertemailRepository, MajorRepository majorRepository, PasswordEncoder passwordEncoder) {
         this.studentRepository = studentRepository;
         this.presidentRepository = presidentRepository;
+        this.studentCertemailRepository = studentCertemailRepository;
+        this.presidentCertemailRepository = presidentCertemailRepository;
         this.majorRepository = majorRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void signUpStudent(Student student) {
+    public boolean signUpStudent(Student student) {
+        StudentCertemail certemail = studentCertemailRepository.findByEmail(student.getEmail());
+        if(certemail == null || certemail.getStatus() == 0) return false;
         student.setPassword(passwordEncoder.encode(student.getPassword()));
         student.setStatus("wait");
         studentRepository.save(student);
+        return true;
     }
 
-    public void signUpPresident(President president) {
+    public boolean signUpPresident(President president) {
+        PresidentCertemail certemail = presidentCertemailRepository.findByEmail(president.getEmail());
+        if(certemail == null || certemail.getStatus() == 0) return false;
         president.setPassword(passwordEncoder.encode(president.getPassword()));
         president.setStatus("wait");
         presidentRepository.save(president);
+        return true;
     }
 
     public boolean studentCheckEmail(String email) {
