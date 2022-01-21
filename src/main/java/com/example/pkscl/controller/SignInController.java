@@ -3,6 +3,9 @@ package com.example.pkscl.controller;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import com.example.pkscl.service.SignInService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,7 @@ public class SignInController {
     }
 
     @PostMapping(value = "/login/student")
-    public ResponseEntity<LinkedHashMap<String, Object>> studentSignIn(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<LinkedHashMap<String, Object>> studentSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request) {
         String email = (String) body.get("email");
         String password = (String) body.get("password");
 
@@ -45,7 +48,12 @@ public class SignInController {
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
         result.put("position", "student");
         result.put("sclData", sclData);
-        
+
+        // 세션
+
+        HttpSession session = request.getSession();
+        session.setAttribute("user", result);
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

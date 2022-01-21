@@ -33,7 +33,13 @@ public class SignUpController {
 
         Student student = new Student();
         student.setEmail(studentModel.getEmail());
-        student.setPassword(studentModel.getPassword());
+        String password = studentModel.getPassword();
+        if(!password.equals(studentModel.getCheckPassword())) {
+            Map<String,Object> errorMsg = new LinkedHashMap<>();
+            errorMsg.put("errorMessage", "비밀번호가 일치하지 않습니다.");
+            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+        }
+        student.setPassword(password);
         student.setMajornumber(studentModel.getMajor());
         student.setStudentid(studentModel.getStdID());
         student.setName(studentModel.getName());
@@ -45,7 +51,9 @@ public class SignUpController {
 
         //중복확인후 400반환
         if(!signUpService.studentCheckEmail(student.getEmail())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            Map<String,Object> errorMsg = new LinkedHashMap<>();
+            errorMsg.put("errorMessage", "이미 가입된 이메일입니다.");
+            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
         }
 
         signUpService.fileUpload(filename+ext, certFile);
@@ -63,7 +71,13 @@ public class SignUpController {
 
         President president = new President();
         president.setEmail(presidentModel.getEmail());
-        president.setPassword(presidentModel.getPassword());
+        String password = presidentModel.getPassword();
+        if(!password.equals(presidentModel.getCheckPassword())) {
+            Map<String,Object> errorMsg = new LinkedHashMap<>();
+            errorMsg.put("errorMessage", "비밀번호가 일치하지 않습니다.");
+            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+        }
+        president.setPassword(password);
         president.setName(presidentModel.getName());
         president.setMajornumber(presidentModel.getMajor());
         president.setStudentid(presidentModel.getStdID());
@@ -76,7 +90,9 @@ public class SignUpController {
         
         //중복확인후 400반환
         if(!signUpService.presidentCheckEmail(president.getEmail())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            Map<String,Object> errorMsg = new LinkedHashMap<>();
+            errorMsg.put("errorMessage", "이미 가입된 이메일입니다.");
+            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
         }
 
         signUpService.fileUpload(filename+ext,certFile);
