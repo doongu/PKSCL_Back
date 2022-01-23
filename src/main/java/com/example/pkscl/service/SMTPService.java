@@ -86,7 +86,7 @@ public class SMTPService {
         // 토큰 및 url 생성
         String token = generateToken(toEmail, (2*1000*60));
         String subject = "회원가입 인증 메일입니다.";
-        String body = "<a href='http://localhost:8080/verify/token/"+ position +"/?token=" + token + "'></a>";
+        String body = "https://pkscl.kro.kr/verify/token/"+ position +"/?token=" + token;
 
         // 이메일 정보 DB 저장
         if(position.equals("student")){

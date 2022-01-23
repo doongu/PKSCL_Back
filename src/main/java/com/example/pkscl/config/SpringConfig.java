@@ -1,4 +1,4 @@
-package com.example.pkscl.service;
+package com.example.pkscl.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

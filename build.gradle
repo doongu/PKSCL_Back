@@ -1,7 +1,7 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.2'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+   id 'org.springframework.boot' version '2.6.2'
+   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+   id 'java'
 }
 
 
@@ -11,65 +11,65 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
-	mavenCentral()
+   mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'javax.xml.bind:jaxb-api'
-	implementation 'io.jsonwebtoken:jjwt:0.9.0'
-	implementation 'com.h2database:h2'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'mysql:mysql-connector-java'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.junit.platform:junit-platform-launcher:1.5.0'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
-	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
+   implementation 'org.springframework.boot:spring-boot-starter-web'
+   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+   implementation 'org.springframework.boot:spring-boot-starter-security'
+   implementation 'org.springframework.boot:spring-boot-starter-mail'
+   implementation 'javax.xml.bind:jaxb-api'
+   implementation 'io.jsonwebtoken:jjwt:0.9.0'
+   implementation 'com.h2database:h2'
+   compileOnly 'org.projectlombok:lombok'
+   runtimeOnly 'mysql:mysql-connector-java'
+   annotationProcessor 'org.projectlombok:lombok'
+   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+   testImplementation 'org.junit.platform:junit-platform-launcher:1.5.0'
+   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
+   testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
 }
 
 test {
-	useJUnitPlatform()
+   useJUnitPlatform()
 }
 def frontendDir = "$projectDir/frontend"
 
 sourceSets {
-	main {
-		resources {
-			srcDirs = ["$projectDir/src/main/resources"]
-		}
-	}
+   main {
+      resources {
+         srcDirs = ["$projectDir/src/main/resources"]
+      }
+   }
 }
 processResources {
-	dependsOn "copyReactBuildFiles"
+   dependsOn "copyReactBuildFiles"
 }
 task installReact(type: Exec) {
-	workingDir "$frontendDir"
-	inputs.dir "$frontendDir"
-	group = BasePlugin.BUILD_GROUP
-	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')){
-		commandLine "npm.cmd", "audit", "fix"
-		commandLine 'npm.cmd', 'install'
-	} else {
-		commandLine "npm", "audit", "fix" commandLine 'npm', 'install' }
+   workingDir "$frontendDir"
+   inputs.dir "$frontendDir"
+   group = BasePlugin.BUILD_GROUP
+   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')){
+      commandLine "npm.cmd", "audit", "fix"
+      commandLine 'npm.cmd', 'install'
+   } else {
+      commandLine "npm", "audit", "fix" commandLine 'npm', 'install' }
 }
 task buildReact(type: Exec) {
-	dependsOn "installReact"
-	workingDir "$frontendDir"
-	inputs.dir "$frontendDir"
-	group = BasePlugin.BUILD_GROUP
-	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-		commandLine "npm.cmd", "run-script", "build"
-	}
-	else {
-		commandLine "npm", "run-script", "build"
-	}
+   dependsOn "installReact"
+   workingDir "$frontendDir"
+   inputs.dir "$frontendDir"
+   group = BasePlugin.BUILD_GROUP
+   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+      commandLine "npm.cmd", "run-script", "build"
+   }
+   else {
+      commandLine "npm", "run-script", "build"
+   }
 }
 task copyReactBuildFiles(type: Copy) {
-	dependsOn "buildReact"
-	from "$frontendDir/build"
-	into "$projectDir/src/main/resources/static"
+   dependsOn "buildReact"
+   from "$frontendDir/build"
+   into "$projectDir/src/main/resources/static"
 }

@@ -1,20 +1,14 @@
 package com.example.pkscl.service;
-
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Optional;
 
-import com.example.pkscl.domain.major.Major;
 import com.example.pkscl.domain.member.Admin;
 import com.example.pkscl.domain.member.President;
 import com.example.pkscl.domain.member.Student;
 import com.example.pkscl.repository.AdminRepository;
-import com.example.pkscl.repository.MajorRepository;
 import com.example.pkscl.repository.PresidentRepository;
 import com.example.pkscl.repository.StudentRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.event.PublicInvocationEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +19,13 @@ public class SignInService {
     private final PresidentRepository presidentRepository;
     private final StudentRepository studentRepository;
     private final AdminRepository adminRepository;
-    private final MajorRepository majorRepository;
 
     @Autowired
-    public SignInService(PasswordEncoder passwordEncoder, PresidentRepository presidentRepository, StudentRepository studentRepository, AdminRepository adminRepository, MajorRepository majorRepository) {
+    public SignInService(PasswordEncoder passwordEncoder, PresidentRepository presidentRepository, StudentRepository studentRepository, AdminRepository adminRepository) {
         this.passwordEncoder = passwordEncoder;
         this.presidentRepository = presidentRepository;
         this.studentRepository = studentRepository;
         this.adminRepository = adminRepository;
-        this.majorRepository = majorRepository;
     }
 
     public String encode(String password) {
@@ -72,22 +64,18 @@ public class SignInService {
         return president.get().getMajornumber();
     }
 
-    // 해당 학과의 major 정보 반환
-    public LinkedHashMap<String, Object> getPresidentInfo(String majorNumber) {
-
-        LinkedHashMap<String, Object> studentPresident = new LinkedHashMap<>();
-        Major major = majorRepository.findByMajornumber(majorNumber);
-        String majorName = major.getMajorname();
-        String name = major.getName();
-        String phoneNumber = major.getPhonenumber();
-        String email = major.getEmail();
-
-        studentPresident.put("major", majorName);
-        studentPresident.put("name", name);
-        studentPresident.put("phoneNumber", phoneNumber);
-        studentPresident.put("email", email);
-
-        return studentPresident;
+    public String getStudentStatus(String email) {
+        Optional<Student> student = studentRepository.findByEmail(email).stream().findFirst();
+        if (!student.isPresent()) return "";
+        return student.get().getStatus();
     }
+
+    public String getPresidentStatus(String email) {
+        Optional<President> president = presidentRepository.findByEmail(email).stream().findFirst();
+        if (!president.isPresent()) return "";
+        return president.get().getStatus();
+    }
+
+
 
 }

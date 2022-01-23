@@ -6,7 +6,6 @@ import java.util.Map;
 import com.example.pkscl.service.SMTPService;
 import com.example.pkscl.service.SignUpService;
 
-import org.hibernate.engine.query.spi.ReturnMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -26,9 +26,10 @@ public class SignInController {
     }
 
     @PostMapping(value = "/login/student")
-    public ResponseEntity<LinkedHashMap<String, Object>> studentSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request) {
+    public ResponseEntity<Void> studentSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request) {
         String email = (String) body.get("email");
         String password = (String) body.get("password");
+
 
         if (email == null || password == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -36,29 +37,22 @@ public class SignInController {
 
         boolean match = signInService.studentMatch(password, email);
 
-        if(!match) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-        // JSON 데이터 생성
-        String majorNumber = signInService.getStudentMajor(email)+"";
-        LinkedHashMap<String, Object> studentPresident = signInService.getPresidentInfo(majorNumber);
-        LinkedHashMap<String, Object> quarter = new LinkedHashMap<>();
-        LinkedHashMap<String, Object> sclData = new LinkedHashMap<>();
-        sclData.put("studentPresident", studentPresident);
-        sclData.put("quater", quarter);
-        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
-        result.put("position", "student");
-        result.put("sclData", sclData);
-
+        if(!match) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        
         // 세션
-
+        String majorNumber = signInService.getStudentMajor(email)+"";
+        String status = signInService.getStudentStatus(email);
         HttpSession session = request.getSession();
-        session.setAttribute("user", result);
+        session.setAttribute("position", "student");
+        session.setAttribute("email", email);
+        session.setAttribute("majorNumber", majorNumber);
+        session.setAttribute("status", status);
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/login/president")
-    public ResponseEntity<LinkedHashMap<String, Object>> presidentSignIn(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<Void> presidentSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request) {
         String email = (String) body.get("email");
         String password = (String) body.get("password");
 
@@ -68,28 +62,27 @@ public class SignInController {
 
         boolean match = signInService.presidentMatch(password, email);
 
-        if(!match) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        if(!match) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        // JSON 데이터 생성
+        // 세션
         String majorNumber = signInService.getPresidentMajor(email)+"";
-        LinkedHashMap<String, Object> studentPresident = signInService.getPresidentInfo(majorNumber);
-        LinkedHashMap<String, Object> quarter = new LinkedHashMap<>();
-        LinkedHashMap<String, Object> sclData = new LinkedHashMap<>();
-        sclData.put("studentPresident", studentPresident);
-        sclData.put("quater", quarter);
-        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
-        result.put("position", "president");
-        result.put("sclData", sclData);
+        String status = signInService.getPresidentStatus(email);
+        HttpSession session = request.getSession();
+        session.setAttribute("position", "president");
+        session.setAttribute("email", email);
+        session.setAttribute("majorNumber", majorNumber);
+        session.setAttribute("status", status);
         
-        return new ResponseEntity<>(result,HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/login/admin")
-    public ResponseEntity<LinkedHashMap<String, Object>> adminSignIn(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<LinkedHashMap<String, Object>> adminSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request) {
         String id = (String) body.get("id");
         String password = (String) body.get("password");
 
-        if (id == null || password == null) {
+        if (id == null || password == null) 
+        {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -97,6 +90,23 @@ public class SignInController {
 
         if(!match) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
+        HttpSession session = request.getSession();
+        session.setAttribute("position", "admin");
+        session.setAttribute("id", id);
+
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PostMapping("/logout") 
+    public ResponseEntity<Void> logout(HttpServletRequest request) 
+    { 
+        HttpSession session = request.getSession(false);
+        if (session != null) 
+        {        
+            session.invalidate();
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+        // 문제: 로그아웃은 되나 반환값이 404가 나옴
     }
 }
