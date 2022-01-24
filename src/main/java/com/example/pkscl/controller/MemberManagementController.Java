@@ -26,7 +26,7 @@ public class MemberManagementController {
         this.memberManagementService = memberManagementService;
     }
 
-    @GetMapping(value = "/student-list")
+    @GetMapping(value = "/manage")
     public ResponseEntity<LinkedHashMap<String,Object>> stduentList(HttpServletRequest request) {
         // Session에서 major num 가져옴
         String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
