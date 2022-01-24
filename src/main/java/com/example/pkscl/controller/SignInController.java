@@ -1,9 +1,11 @@
 package com.example.pkscl.controller;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.example.pkscl.service.SignInService;
@@ -99,14 +101,11 @@ public class SignInController {
 
 
     @PostMapping("/logout") 
-    public ResponseEntity<Void> logout(HttpServletRequest request) 
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException
     { 
         HttpSession session = request.getSession(false);
-        if (session != null) 
-        {        
-            session.invalidate();
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-        
+        session.invalidate();
+        response.sendRedirect("/");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
