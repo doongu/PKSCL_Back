@@ -1,18 +1,16 @@
 package com.example.pkscl.service;
 
-import com.example.pkscl.domain.major.Major;
 import com.example.pkscl.domain.member.Student;
-import com.example.pkscl.repository.MajorRepository;
 import com.example.pkscl.repository.StudentRepository;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static com.example.pkscl.repository.StudentRepository.*;
 
 @Service
 public class MemberManagementService {
@@ -25,55 +23,50 @@ public class MemberManagementService {
     }
 
 
-    public  LinkedHashMap<String, Object>  getStudentData(String majorNumber) {
-
-        LinkedHashMap<String, Object> studentPresident = new LinkedHashMap<>();
-
-        // 리스트 형식으로 받아옴
-        List<Student> students= studentRepository.findByMajornumber(majorNumber);
-
+    public LinkedHashMap<String, Object> getStudentData(String majorNumber) {
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
 
-        List<LinkedHashMap<String, Object>>waiting_list = new ArrayList<>();
+        // 리스트 형식으로 받아옴
+        List<Student> students= studentRepository.findByMajornumber(Integer.parseInt(majorNumber));
+
+        LinkedHashMap<String, Object> studentPresident = new LinkedHashMap<>();
+        List<LinkedHashMap<String, Object>> waiting_list = new ArrayList<>();
         List<LinkedHashMap<String, Object>> refusal_list = new ArrayList<>();
         List<LinkedHashMap<String, Object>> approval_list = new ArrayList<>();
-
+        
         // 로직 작성
         // 필요한 데이터만 추출
-        for( int index = 0;  index < students.size(); index++) {
+        for(Student student : students) {
+            String status = student.getStatus();
+            String studentId = student.getStudentid();
+            String name = student.getName();
+            String email = student.getEmail();
+            String certfilepath = student.getCertfilepath();
 
-            String status = students.get(index).getStatus();
+            LinkedHashMap<String, Object> studentInfo = new LinkedHashMap<>();
+            studentInfo.put("studentId", studentId);
+            studentInfo.put("name", name);
+            studentInfo.put("email", email);
+            studentInfo.put("studentImgPath", certfilepath);
 
-            String studentId = students.get(index).getStudentid();
-            String name = students.get(index).getName();
-            String certfilepath = students.get(index).getCertfilepath();
-            LinkedHashMap<String, Object> tmp = new LinkedHashMap<>();
-            tmp.put("studentId", studentId);
-            tmp.put("studentId", name);
-            tmp.put("studentId", certfilepath);
-
-            if (status == "waiting"){
-
-                waiting_list.add(tmp);
+            if(status.equals("waiting")) {
+                    
+                waiting_list.add(studentInfo);
             }
-            else if (status == "refusal"){
-                refusal_list.add(tmp);
+            else if (status.equals("refusal")) {
+                refusal_list.add(studentInfo);
             }
-            else if (status == "approval"){
-                approval_list.add(tmp);
+            else if (status.equals("approval")) {
+                approval_list.add(studentInfo);
             }
         }
 
+        studentPresident.put("waiting", waiting_list );
+        studentPresident.put("refusal", refusal_list );
+        studentPresident.put("approval", approval_list );
 
-
-
-//
-        result.put( "waiting", waiting_list );
-        result.put( "refusal", waiting_list );
-        result.put( "approval", waiting_list );
-
-        // 리스트 반환, 이후 controller에서 json형식으로 반환.
+        result.put("studentPresident", studentPresident);
         return result;
     }
 

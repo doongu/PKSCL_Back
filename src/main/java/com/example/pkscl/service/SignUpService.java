@@ -44,7 +44,7 @@ public class SignUpService {
         StudentCertemail certemail = studentCertemailRepository.findByEmail(student.getEmail());
         if(certemail == null || certemail.getStatus() == 0) return false;
         student.setPassword(passwordEncoder.encode(student.getPassword()));
-        student.setStatus("wait");
+        student.setStatus("waiting");
         studentRepository.save(student);
         return true;
     }
@@ -53,7 +53,7 @@ public class SignUpService {
         PresidentCertemail certemail = presidentCertemailRepository.findByEmail(president.getEmail());
         if(certemail == null || certemail.getStatus() == 0) return false;
         president.setPassword(passwordEncoder.encode(president.getPassword()));
-        president.setStatus("wait");
+        president.setStatus("waiting");
         presidentRepository.save(president);
         return true;
     }
