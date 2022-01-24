@@ -107,6 +107,6 @@ public class SignInController {
             session.invalidate();
         }
         return new ResponseEntity<>(HttpStatus.OK);
-        // 문제: 로그아웃은 되나 반환값이 404가 나옴
+        
     }
 }

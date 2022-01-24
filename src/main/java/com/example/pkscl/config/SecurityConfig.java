@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class SpringConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -23,6 +23,7 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .cors().disable()      // cors 비활성화
             .csrf().disable()      // csrf 비활성화
             .formLogin().disable() //기본 로그인 페이지 없애기
+            .logout().disable()    //기본 로그아웃 페이지 없애기
             .headers().frameOptions().disable();
     }
 
