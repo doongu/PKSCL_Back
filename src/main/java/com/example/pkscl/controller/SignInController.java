@@ -28,20 +28,26 @@ public class SignInController {
     }
 
     @PostMapping(value = "/login/student")
-    public ResponseEntity<Void> studentSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request) {
+    public void studentSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+        
+        // 서비스 파라미터 설정
         String email = (String) body.get("email");
         String password = (String) body.get("password");
 
-
-        if (email == null || password == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        // 400 Bad Request
+        if(email == null || password == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
 
+        // 401 Unauthorized
         boolean match = signInService.studentMatch(password, email);
-
-        if(!match) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(!match) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
         
-        // 세션
+        // 세션 설정
         String majorNumber = signInService.getStudentMajor(email)+"";
         String status = signInService.getStudentStatus(email);
         HttpSession session = request.getSession();
@@ -49,24 +55,30 @@ public class SignInController {
         session.setAttribute("email", email);
         session.setAttribute("majorNumber", majorNumber);
         session.setAttribute("status", status);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        
     }
 
     @PostMapping(value = "/login/president")
-    public ResponseEntity<Void> presidentSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request) {
+    public void presidentSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+    
+        // 서비스 파라미터 설정
         String email = (String) body.get("email");
         String password = (String) body.get("password");
 
+        // 400 Bad Request
         if (email == null || password == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
 
+        // 401 Unauthorized
         boolean match = signInService.presidentMatch(password, email);
+        if(!match) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-        if(!match) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        // 세션
+        // 세션 생성
         String majorNumber = signInService.getPresidentMajor(email)+"";
         String status = signInService.getPresidentStatus(email);
         HttpSession session = request.getSession();
@@ -74,29 +86,34 @@ public class SignInController {
         session.setAttribute("email", email);
         session.setAttribute("majorNumber", majorNumber);
         session.setAttribute("status", status);
-        
-        return new ResponseEntity<>(HttpStatus.OK);
+            
     }
 
     @PostMapping(value = "/login/admin")
-    public ResponseEntity<LinkedHashMap<String, Object>> adminSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request) {
+    public void adminSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+        
+        // 서비스 파라미터 설정
         String id = (String) body.get("id");
         String password = (String) body.get("password");
 
-        if (id == null || password == null) 
-        {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        // 400 bad request
+        if (id == null || password == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
 
+        // 401 unauthorized
         boolean match = signInService.adminMatch(password, id);
+        if(!match){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-        if(!match) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
+        // 세션 생성
         HttpSession session = request.getSession();
         session.setAttribute("position", "admin");
         session.setAttribute("id", id);
 
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
