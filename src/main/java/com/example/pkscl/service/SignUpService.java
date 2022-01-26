@@ -59,21 +59,15 @@ public class SignUpService {
     }
 
     public boolean studentCheckEmail(String email) {
-        List<Student> studentList = studentRepository.findByEmail(email);
-        if (studentList.size() == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        Student student = studentRepository.findByEmail(email);
+        if(student != null) return false;
+        return true;
     }
 
     public boolean presidentCheckEmail(String email) {
-        List<President> presidentList = presidentRepository.findByEmail(email);
-        if (presidentList.size() == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        President president = presidentRepository.findByEmail(email);
+        if(president != null) return false;
+        return true;
     }
 
     public void fileUpload(String filename, MultipartFile file) throws Exception {

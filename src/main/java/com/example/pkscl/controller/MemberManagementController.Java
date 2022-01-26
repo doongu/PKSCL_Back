@@ -20,11 +20,35 @@ public class MemberManagementController {
     public MemberManagementController(MemberManagementService memberManagementService) {
         this.memberManagementService = memberManagementService;
     }
+    
+    @GetMapping(value = "/student-list")
+    public Map<String,Object> studentList(HttpServletRequest request, HttpServletResponse response) {
+
+        // 서비스 파라미터 설정
+        String position = (String) request.getSession(false).getAttribute("position");
+        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
+
+        // 400 Bad Request
+        if(majorNumber == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+
+        // 403 Forbidden
+        if(!position.equals("president")) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
+
+        // 서비스 호출 및 반환
+        return memberManagementService.getStudentData(majorNumber);
+    }
 
     @PatchMapping(value = "/student-list")
     public void patchStudentStatus(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
 
         // 서비스 파라미터 설정
+        String position = (String) request.getSession(false).getAttribute("position");
         String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
         String patchStatus = (String) body.get("status");
         List<String> emailList = (List<String>) body.get("email");
@@ -35,27 +59,61 @@ public class MemberManagementController {
             return;
         }
 
+        // 403 Forbidden
+        if(!position.equals("president")) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         // 서비스 호출
         for(String email : emailList) {
             memberManagementService.patchStudentStatus(email, patchStatus, majorNumber);
         }
     }
-    
-    @GetMapping(value = "/student-list")
-    public Map<String,Object> studentList(HttpServletRequest request, HttpServletResponse response) {
+
+    @GetMapping(value = "/president-list")
+    public Map<String,Object> presidentList(HttpServletRequest request, HttpServletResponse response) {
 
         // 서비스 파라미터 설정
-        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
-
-        // 400 Bad Request
-        if(majorNumber == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        String position = (String) request.getSession(false).getAttribute("position");
+        
+        // 403 Forbidden
+        if(!position.equals("admin")) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return null;
         }
 
         // 서비스 호출 및 반환
-        return memberManagementService.getStudentData(majorNumber);
+        return memberManagementService.getPresidentData();
     }
+
+    @PatchMapping(value = "/president-list")
+    public void patchPresidentStatus(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+
+        // 서비스 파라미터 설정
+        String position = (String) request.getSession(false).getAttribute("position");
+        String patchStatus = (String) body.get("status");
+        List<String> emailList = (List<String>) body.get("email");
+
+        // 400 Bad Request
+        if(emailList == null || emailList.size() == 0 || patchStatus == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        // 403 Forbidden
+        if(!position.equals("admin")) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        // 서비스 호출
+        for(String email : emailList) {
+            memberManagementService.patchPresidentStatus(email, patchStatus);
+        }
+    }
+
+
 
 
 }

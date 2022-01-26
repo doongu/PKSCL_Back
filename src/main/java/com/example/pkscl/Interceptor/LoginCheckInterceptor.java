@@ -23,7 +23,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         // 미인증 사용자 요청시
         
-        if (session == null || session.getAttribute("position") == null || session.getAttribute("email") == null) {
+        if (session == null || session.getAttribute("position") == null) {
             log.info("미인증 사용자 요청");
             
             // 401 Unauthorized 응답

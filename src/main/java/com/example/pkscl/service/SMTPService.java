@@ -129,9 +129,9 @@ public class SMTPService {
     public Integer studentTempPassword(String email, String name, String studentId){
 
         // 이메일로 사용자 검색
-        Optional<Student> student = studentRepository.findByEmail(email).stream().findFirst();
-        if (!student.isPresent()) return -1;
-        if (!student.get().getName().equals(name) || !student.get().getStudentid().equals(studentId)) return -2;
+        Student student = studentRepository.findByEmail(email);
+        if (student == null) return -1;
+        if (!student.getName().equals(name) || !student.getStudentid().equals(studentId)) return -2;
 
         // 임시 비밀번호 숫자 6자리로 생성
         String tempPassword = "PKSCL";
@@ -145,17 +145,17 @@ public class SMTPService {
         sendEmail(email, subject, body);
 
         // 비밀번호 변경
-        student.get().setPassword(passwordEncoder.encode(tempPassword));
-        studentRepository.save(student.get());
+        student.setPassword(passwordEncoder.encode(tempPassword));
+        studentRepository.save(student);
         return 1;
     }
     
     public Integer presidentTempPassword(String email, String name, String studentId){
 
         // 이메일로 사용자 검색
-        Optional<President> president = presidentRepository.findByEmail(email).stream().findFirst();
-        if (!president.isPresent()) return -1;
-        if (!president.get().getName().equals(name) || !president.get().getStudentid().equals(studentId)) return -2;
+        President president = presidentRepository.findByEmail(email);
+        if (president == null) return -1;
+        if (!president.getName().equals(name) || !president.getStudentid().equals(studentId)) return -2;
 
         // 임시 비밀번호 숫자 6자리로 생성
         String tempPassword = "PKSCL";
@@ -169,8 +169,8 @@ public class SMTPService {
         sendEmail(email, subject, body);
 
         // 비밀번호 변경
-        president.get().setPassword(passwordEncoder.encode(tempPassword));
-        presidentRepository.save(president.get());
+        president.setPassword(passwordEncoder.encode(tempPassword));
+        presidentRepository.save(president);
         return 1;
     }
 }

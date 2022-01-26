@@ -22,7 +22,7 @@ public class LedgerController {
         this.ledgerService = ledgerService;
     }
 
-    @GetMapping(value = "/pkscl")
+    @GetMapping(value = "/ledger")
     public ResponseEntity<LinkedHashMap<String, Object>> pkscl(HttpServletRequest request) {
         String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
         return new ResponseEntity<>(ledgerService.getMajorData(majorNumber), HttpStatus.OK);

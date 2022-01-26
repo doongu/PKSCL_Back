@@ -34,46 +34,46 @@ public class SignInService {
 
     // 비밀번호 일치 여부 확인
     public boolean presidentMatch(String password, String email) {
-        Optional<President> president = presidentRepository.findByEmail(email).stream().findFirst();
-        if (!president.isPresent()) return false;
-        return passwordEncoder.matches(password, president.get().getPassword());
+        President president = presidentRepository.findByEmail(email);
+        if(president == null) return false;
+        return passwordEncoder.matches(password, president.getPassword());
     }
 
     public boolean studentMatch(String password, String email) {
-        Optional<Student> student = studentRepository.findByEmail(email).stream().findFirst();
-        if (!student.isPresent()) return false;
-        return passwordEncoder.matches(password, student.get().getPassword());
+        Student student = studentRepository.findByEmail(email);
+        if (student == null) return false;
+        return passwordEncoder.matches(password, student.getPassword());
     }
 
     public boolean adminMatch(String password, String id) {
-        Optional<Admin> admin = adminRepository.findById(id).stream().findFirst();
-        if(!admin.isPresent()) return false;
-        return passwordEncoder.matches(password, admin.get().getPassword());
+        Admin admin = adminRepository.findById(id);
+        if (admin == null) return false;
+        return passwordEncoder.matches(password, admin.getPassword());
     }
 
     //이메일로 부터 학생 학과번호 가져오기
     public int getStudentMajor(String email) {
-        Optional<Student> student = studentRepository.findByEmail(email).stream().findFirst();
-        if (!student.isPresent()) return 0;
-        return student.get().getMajornumber();
+        Student student = studentRepository.findByEmail(email);
+        if(student == null) return -1;
+        return student.getMajornumber();
     }
 
     public int getPresidentMajor(String email) {
-        Optional<President> president = presidentRepository.findByEmail(email).stream().findFirst();
-        if (!president.isPresent()) return 0;
-        return president.get().getMajornumber();
+        President president = presidentRepository.findByEmail(email);
+        if (president == null) return -1;
+        return president.getMajornumber();
     }
 
     public String getStudentStatus(String email) {
-        Optional<Student> student = studentRepository.findByEmail(email).stream().findFirst();
-        if (!student.isPresent()) return "";
-        return student.get().getStatus();
+        Student student = studentRepository.findByEmail(email);
+        if (student == null) return "";
+        return student.getStatus();
     }
 
     public String getPresidentStatus(String email) {
-        Optional<President> president = presidentRepository.findByEmail(email).stream().findFirst();
-        if (!president.isPresent()) return "";
-        return president.get().getStatus();
+        President president = presidentRepository.findByEmail(email);
+        if (president == null) return "";
+        return president.getStatus();
     }
 
 
