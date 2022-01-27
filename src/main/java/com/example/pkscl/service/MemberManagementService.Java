@@ -47,7 +47,7 @@ public class MemberManagementService {
             String certfilepath = student.getCertfilepath();
 
             LinkedHashMap<String, Object> studentInfo = new LinkedHashMap<>();
-            studentInfo.put("stdId", studentId);
+            studentInfo.put("stdID", studentId);
             studentInfo.put("name", name);
             studentInfo.put("email", email);
             studentInfo.put("studentImgPath", certfilepath);
