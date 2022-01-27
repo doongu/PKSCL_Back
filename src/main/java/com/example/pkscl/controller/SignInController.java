@@ -132,8 +132,8 @@ public class SignInController {
         HttpSession session = request.getSession(false);
         String position = (String) session.getAttribute("position");
         String email = (String) session.getAttribute("email");
-        String checkemail = (String) body.get("email");
-        String password = (String) body.get("password");
+        String checkemail = (String) body.get("inputEmail");
+        String password = (String) body.get("inputPassword");
 
         // 400 bad request
         if (checkemail == null || password == null) {
