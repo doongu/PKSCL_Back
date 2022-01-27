@@ -76,6 +76,14 @@ public class SignInService {
         return president.getStatus();
     }
 
+    public void withdrawalStudent(String email) {
+        Student student = studentRepository.findByEmail(email);
+        studentRepository.delete(student);
+    }
 
+    public void withdrawalPresident(String email) {
+        President president = presidentRepository.findByEmail(email);
+        presidentRepository.delete(president);
+    }
 
 }

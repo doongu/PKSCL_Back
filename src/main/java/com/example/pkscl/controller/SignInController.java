@@ -122,7 +122,56 @@ public class SignInController {
     { 
         HttpSession session = request.getSession(false);
         session.invalidate();
-        response.sendRedirect("/");
         response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @PostMapping("/withdrawal")
+    public void secession(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        // 서비스 파라미터 설정
+        HttpSession session = request.getSession(false);
+        String position = (String) session.getAttribute("position");
+        String email = (String) session.getAttribute("email");
+        String checkemail = (String) body.get("email");
+        String password = (String) body.get("password");
+
+        // 400 bad request
+        if (checkemail == null || password == null) {
+
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+
+        }
+
+        if(position.equals("student")) {
+
+            // 401 unauthorized
+            // 이메일, 비밀번호 일치 여부 확인
+            if(!checkemail.equals(email) || !signInService.studentMatch(password, email)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            // 탈퇴 
+            signInService.withdrawalStudent(email);
+
+        } else if(position.equals("president")) {
+
+            // 401 unauthorized
+            // 이메일, 비밀번호 일치 여부 확인
+            if(!checkemail.equals(email) || !signInService.presidentMatch(password, email)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            // 탈퇴
+            signInService.withdrawalPresident(email);
+
+        }
+
+        // 세션 삭제
+        session.invalidate();
+        response.setStatus(HttpServletResponse.SC_OK);
+
     }
 }
