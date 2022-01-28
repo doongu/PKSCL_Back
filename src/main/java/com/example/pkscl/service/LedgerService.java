@@ -22,7 +22,7 @@ public class LedgerService {
     }
 
 
-    public LinkedHashMap<String, Object> getMajorData(String major) {
+    public LinkedHashMap<String, Object> getLedgerData(String major) {
         LinkedHashMap<String, Object> scldata = new LinkedHashMap<>();
         scldata.put("studentPresident", getPresidentData(major));
         scldata.put("quarterStatus", getQuarterStatus(major));
@@ -48,17 +48,37 @@ public class LedgerService {
         return studentPresident;
     }
 
-    // 임시 코드
     public LinkedHashMap<String, Object> getQuarterStatus(String majorNumber){
-        LinkedHashMap<String, Object> quaterStatus = new LinkedHashMap<>();
-        quaterStatus.put("1", "quarterStatus1");
-        return quaterStatus;
+        LinkedHashMap<String, Object> quarterStatus = new LinkedHashMap<>();
+        String quarter1 = "1";
+        String quarter2 = "2";
+        String quarter3 = "3";
+        String quarter4 = "4";
+        quarterStatus.put("quarter1", quarter1);
+        quarterStatus.put("quarter2", quarter2);
+        quarterStatus.put("quarter3", quarter3);
+        quarterStatus.put("quarter4", quarter4);
+        return quarterStatus;
     }
 
     public LinkedHashMap<String, Object> getQuarterData(String majorNumber){
-        LinkedHashMap<String, Object> quater = new LinkedHashMap<>();
-        quater.put("1", "quarter1");
-        return quater;
+
+        LinkedHashMap<String, Object> ledger = new LinkedHashMap<>();
+        
+        for(int i = 1; i <= 4; i++){
+            LinkedHashMap<String, Object> quarterN = new LinkedHashMap<>();
+            LinkedHashMap<String, Object> eventList = new LinkedHashMap<>();
+            String openDate = "2020-01-01";
+            String endDate = "2020-03-31";
+            String quarterNumber = String.valueOf(i);
+            String quarter = "quarter" + quarterNumber;
+            quarterN.put("openDate", openDate);
+            quarterN.put("endDate", endDate);
+            quarterN.put("eventList", eventList);
+            ledger.put(quarter, quarterN);
+        }
+
+        return ledger;
     }
    
     

@@ -101,7 +101,6 @@ public class MemberManagementService {
 
             LinkedHashMap<String, Object> presidentInfo = new LinkedHashMap<>();
             presidentInfo.put("major", majorName);
-            presidentInfo.put("majorNumber", majorNumber);
             presidentInfo.put("email", email);
             presidentInfo.put("stdID", stdID);
             presidentInfo.put("name", name);

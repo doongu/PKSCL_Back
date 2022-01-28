@@ -24,15 +24,11 @@ public class LedgerController {
         this.ledgerService = ledgerService;
     }
 
-    // @GetMapping(value = "/ledger")
-    // public Map<String, Object> getLedger(HttpServletRequest request, HttpServletResponse response) {
-    //     String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
-    //     return new LinkedHashMap<String, Object>() {
-    //         {
-    //             put("ledger", ledgerService.getLedger(majorNumber));
-    //         }
-    //     };
-    // }
+    @GetMapping(value = "/ledger")
+    public Map<String, Object> getLedger(HttpServletRequest request, HttpServletResponse response) {
+        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
+        return ledgerService.getLedgerData(majorNumber);
+    }
 
     // @GetMapping(value = "/ledger/admin")
     // public Map<String, Object> getLedgerAdmin(HttpServletRequest request, HttpServletResponse response) {

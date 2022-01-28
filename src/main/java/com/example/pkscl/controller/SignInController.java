@@ -93,7 +93,7 @@ public class SignInController {
     public void adminSignIn(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
         
         // 서비스 파라미터 설정
-        String id = (String) body.get("id");
+        String id = (String) body.get("email");
         String password = (String) body.get("password");
 
         // 400 bad request
