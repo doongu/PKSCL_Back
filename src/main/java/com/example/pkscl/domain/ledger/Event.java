@@ -9,9 +9,9 @@ import lombok.Data;
 @Data
 public class Event {
     @Id
-    int eventNumber;
-    int majorNumber;
-    String quarterNumber;
-    String eventTitle;
-    String eventContext;
+    int eventnumber;
+    int majornumber;
+    String quarternumber;
+    String eventtitle;
+    String eventcontext;
 }

@@ -9,9 +9,9 @@ import lombok.Data;
 @Data
 public class Receipt {
     @Id
-    int receiptNumber;
-    int eventNumber;
-    String receiptTitle;
-    String receiptImg;
-    String receiptContext;
+    int receiptnumber;
+    int eventnumber;
+    String receipttitle;
+    String receiptimg;
+    String receiptcontext;
 }

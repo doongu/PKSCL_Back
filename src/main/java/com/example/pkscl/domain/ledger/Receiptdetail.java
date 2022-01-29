@@ -9,8 +9,8 @@ import lombok.Data;
 @Data
 public class Receiptdetail {
     @Id
-    int detailNumber;
-    int receiptNumber;
+    int detailnumber;
+    int receiptnumber;
     String context;
     String price;
     String amount;

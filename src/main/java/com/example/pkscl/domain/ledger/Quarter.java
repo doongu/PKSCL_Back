@@ -11,9 +11,9 @@ import lombok.Data;
 @IdClass(QuarterKey.class)
 public class Quarter {
     @Id
-    int majorNumber;
+    int majornumber;
     @Id
-    String quarterNumber;
-    String openDate;
-    String endDate;
+    String quarternumber;
+    String opendate;
+    String enddate;
 }
