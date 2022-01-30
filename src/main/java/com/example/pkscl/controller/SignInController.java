@@ -13,6 +13,7 @@ import com.example.pkscl.service.SignInService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -125,7 +126,7 @@ public class SignInController {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    @PostMapping("/withdrawal")
+    @DeleteMapping("/withdrawal")
     public void secession(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         // 서비스 파라미터 설정

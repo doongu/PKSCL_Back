@@ -15,5 +15,5 @@ public class Quarter {
     @Id
     String quarternumber;
     String opendate;
-    String enddate;
+    String closedate;
 }

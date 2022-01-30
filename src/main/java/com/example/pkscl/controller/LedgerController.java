@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,14 +28,17 @@ public class LedgerController {
     @GetMapping(value = "/ledger")
     public Map<String, Object> getLedger(HttpServletRequest request, HttpServletResponse response) {
         String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
-        return ledgerService.getLedgerData(majorNumber);
+        String position = (String) request.getSession(false).getAttribute("position");
+
+        return ledgerService.getLedgerData(majorNumber, position);
     }
 
-    // @GetMapping(value = "/ledger/admin")
-    // public Map<String, Object> getLedgerAdmin(HttpServletRequest request, HttpServletResponse response) {
-    //     String position = (String) request.getSession(false).getAttribute("position");
-    //     return new ResponseEntity<>(ledgerService.getAdminData(position), HttpStatus.OK);
-    // }
+    @GetMapping(value = "/ledger/admin")
+    public Map<String, Object> getLedgerAdmin(@RequestParam(value = "majorNumber", required = true) String majorNumber, HttpServletRequest request, HttpServletResponse response) {
+        String position = (String) request.getSession(false).getAttribute("position");
+
+        return ledgerService.getLedgerData(majorNumber, position);
+    }
 
     // @PatchMapping(value = "/ledger")
     // public void patchLedger(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {

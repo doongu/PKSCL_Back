@@ -3,12 +3,9 @@ package com.example.pkscl.service;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import javax.swing.text.Position;
-
+import java.util.Map;
 import com.example.pkscl.domain.ledger.Event;
 import com.example.pkscl.domain.ledger.Quarter;
-import com.example.pkscl.domain.ledger.QuarterKey;
 import com.example.pkscl.domain.ledger.Receipt;
 import com.example.pkscl.domain.ledger.Receiptdetail;
 import com.example.pkscl.domain.major.Major;
@@ -41,16 +38,15 @@ public class LedgerService {
     }
 
 
-    public LinkedHashMap<String, Object> getLedgerData(String major) {
+    public Map<String, Object> getLedgerData(String major, String position) {
         LinkedHashMap<String, Object> scldata = new LinkedHashMap<>();
         scldata.put("studentPresident", getPresidentData(major));
-        scldata.put("quarterStatus", getQuarterStatus(major));
-        scldata.put("quarter", getQuarterData(major));
+        scldata.put("quarter", getQuarterData(major, position));
         return scldata;
     }
 
     // 해당 학과의 major 정보 반환
-    public LinkedHashMap<String, Object> getPresidentData(String majorNumber) {
+    public Map<String, Object> getPresidentData(String majorNumber) {
 
         LinkedHashMap<String, Object> studentPresident = new LinkedHashMap<>();
         Major major = majorRepository.findByMajornumber(majorNumber);
@@ -67,57 +63,44 @@ public class LedgerService {
         return studentPresident;
     }
 
-    public LinkedHashMap<String, Object> getQuarterStatus(String majorNumber){
-        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
-        List<Quarter> quarterList = quarterRepository.findByMajornumber(Integer.parseInt(majorNumber));
-
-        for(Quarter quarter : quarterList){
-            String opendate = quarter.getOpendate();
-            String enddate = quarter.getEnddate();
-            // String quarterstatus는 현재날짜가 opendate와 enddate 사이에 있는지 확인하는 값
-
-            // 현재 날짜
-            String quarterstatus = "";
-            if(opendate.compareTo(getCurrentDate()) <= 0 && enddate.compareTo(getCurrentDate()) >= 0){
-                quarterstatus = "true";
-            }else{
-                quarterstatus = "false";
-            }
-            String quarterNumber = "quarter"+quarter.getQuarternumber();
-            result.put(quarterNumber, quarterstatus);
-        }
-
-        // 나머지 quarterstatus는 false
-        for(int i = quarterList.size()+1; i <= 4; i++){
-            String QuarterNumber = "quarter"+String.valueOf(i);
-            result.put(QuarterNumber, "False");
-        }
-        
-        return result;
-    }
-
     private String getCurrentDate() {
         java.util.Date date = new java.util.Date();
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-        String currentDate = sdf.format(date);
-        return currentDate;
+        return sdf.format(date);
     }
 
-    public LinkedHashMap<String, Object> getQuarterData(String majorNumber){
+
+    public boolean getQuarterStatus(String majorNumber, String quarterNumber){
+        Quarter quarter = quarterRepository.findByMajornumberAndQuarternumber(Integer.parseInt(majorNumber), quarterNumber);
+        if(quarter == null){
+            return false;
+        }
+        String opendate = quarter.getOpendate();
+        String closedate = quarter.getClosedate();
+        
+        if(opendate.compareTo(getCurrentDate()) <= 0 && closedate.compareTo(getCurrentDate()) >= 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    public Map<String, Object> getQuarterData(String majorNumber, String position) {
 
         LinkedHashMap<String, Object> ledger = new LinkedHashMap<>();
-        List<Quarter> quarterList = quarterRepository.findByMajornumber(Integer.parseInt(majorNumber));
-        
-        for(Quarter quarter : quarterList){
+
+        for(int i = 1; i <= 4; i++){
             LinkedHashMap<String, Object> quarterMap = new LinkedHashMap<>();
-            // majorNumber는 int, i는 String
-            String openDate = quarter.getOpendate();
-            String endDate = quarter.getEnddate();
-            String quarterNumber = "quarter" + quarter.getQuarternumber();
+            String quarterNumber = "quarter" + i;
+            boolean status = getQuarterStatus(majorNumber, String.valueOf(i));
+            quarterMap.put("status", String.valueOf(status));
             List<Object> eventList = getEventList(majorNumber, quarterNumber);
-            quarterMap.put("openDate", openDate);
-            quarterMap.put("endDate", endDate);
-            quarterMap.put("eventList", eventList);
+            if((!status && position.equals("student")) || eventList.isEmpty()){
+
+            }else{
+                quarterMap.put("eventList", eventList);
+            }
             ledger.put(quarterNumber, quarterMap);
         }
 
