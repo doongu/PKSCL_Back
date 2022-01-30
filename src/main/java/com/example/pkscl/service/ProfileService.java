@@ -49,7 +49,7 @@ public class ProfileService {
             profileInfo.put("major", majorName);
             profileInfo.put("name", name);
             profileInfo.put("email", pEmail);
-            profileInfo.put("stdPath", certfilepath);
+            profileInfo.put("stdImgPath", certfilepath);
         }
 
         else if(position == "president"){
@@ -68,7 +68,7 @@ public class ProfileService {
             profileInfo.put("name", name);
             profileInfo.put("phoneNumber", phoneNumber);
             profileInfo.put("email", pEmail);
-            profileInfo.put("studentImgPath", certfilepath);
+            profileInfo.put("presidentImgPath", certfilepath);
             profileInfo.put("majorLogo", "nothing");
         }
 
