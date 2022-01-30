@@ -112,9 +112,11 @@ public class LedgerService {
         List<Event> eventList = eventRepository.findByMajornumberAndQuarternumber(Integer.parseInt(majorNumber), quarterNumber);
         for(Event event : eventList){
             LinkedHashMap<String, Object> eventMap = new LinkedHashMap<>();
+            String eventNumber = String.valueOf(event.getEventnumber());
             String eventTitle = event.getEventtitle();
             String eventContext = event.getEventcontext();
             List<Object> receiptList = getReceiptList(event.getEventnumber());
+            eventMap.put("eventNumber", eventNumber);
             eventMap.put("eventTitle", eventTitle);
             eventMap.put("eventContext", eventContext);
             eventMap.put("receiptList", receiptList);
