@@ -8,11 +8,10 @@ import lombok.Data;
 
 @Entity
 @Data
-@IdClass(QuarterKey.class)
 public class Quarter {
     @Id
+    int quarterid;
     int majornumber;
-    @Id
     String quarternumber;
     String opendate;
     String closedate;

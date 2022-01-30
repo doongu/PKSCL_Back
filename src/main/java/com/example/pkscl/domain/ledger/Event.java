@@ -10,8 +10,7 @@ import lombok.Data;
 public class Event {
     @Id
     int eventnumber;
-    int majornumber;
-    String quarternumber;
+    int quarterid;
     String eventtitle;
     String eventcontext;
 }

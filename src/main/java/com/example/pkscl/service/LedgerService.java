@@ -87,13 +87,12 @@ public class LedgerService {
 
 
     public Map<String, Object> getQuarterData(String majorNumber, String position) {
-
         LinkedHashMap<String, Object> ledger = new LinkedHashMap<>();
 
         for(int i = 1; i <= 4; i++){
             LinkedHashMap<String, Object> quarterMap = new LinkedHashMap<>();
             String quarterNumber = "quarter" + i;
-            boolean status = getQuarterStatus(majorNumber, String.valueOf(i));
+            boolean status = getQuarterStatus(majorNumber, quarterNumber);
             quarterMap.put("status", String.valueOf(status));
             List<Object> eventList = getEventList(majorNumber, quarterNumber);
             if((!status && position.equals("student")) || eventList.isEmpty()){
@@ -109,7 +108,9 @@ public class LedgerService {
 
     public List<Object> getEventList(String majorNumber, String quarterNumber){
         ArrayList<Object> result = new ArrayList<>();
-        List<Event> eventList = eventRepository.findByMajornumberAndQuarternumber(Integer.parseInt(majorNumber), quarterNumber);
+        Quarter quarter = quarterRepository.findByMajornumberAndQuarternumber(Integer.parseInt(majorNumber), quarterNumber);
+        if(quarter == null) return result;
+        List<Event> eventList = eventRepository.findByQuarterid(quarter.getQuarterid());
         for(Event event : eventList){
             LinkedHashMap<String, Object> eventMap = new LinkedHashMap<>();
             String eventNumber = String.valueOf(event.getEventnumber());
@@ -161,6 +162,17 @@ public class LedgerService {
         }
         return result;
     }
+
+    // public void addLedgerData(String majorNumber, Map<String,Object> body){
+    //     String quarter = (String) body.get("quater");
+    //     // 이벤트 추가
+    //     String eventTitle = (String) body.get("eventTitle");
+    //     String eventContext = (String) body.get("eventContext");
+    //     Event event = new Event();
+    //     event.setMajornumber(Integer.parseInt(majorNumber));
+    //     event.setQuarternumber(quarter);
+
+    // }
 
 
     

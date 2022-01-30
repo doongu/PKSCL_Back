@@ -56,7 +56,7 @@ public class SignUpController {
             return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
         }
 
-        signUpService.fileUpload(filename+ext, certFile);
+        signUpService.fileUpload(filename+ext, certFile,"student");
         if(!signUpService.signUpStudent(student)) {
             Map<String,Object> errorMsg = new LinkedHashMap<>();
             errorMsg.put("errorMessage", "이메일 인증이 완료되지 않았습니다.");
@@ -95,7 +95,7 @@ public class SignUpController {
             return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
         }
 
-        signUpService.fileUpload(filename+ext,certFile);
+        signUpService.fileUpload(filename+ext,certFile,"president");
         if(!signUpService.signUpPresident(president)) {
             Map<String,Object> errorMsg = new LinkedHashMap<>();
             errorMsg.put("errorMessage", "이메일 인증이 완료되지 않았습니다.");
