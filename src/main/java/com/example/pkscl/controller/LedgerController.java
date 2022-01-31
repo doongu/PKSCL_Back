@@ -8,12 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 import com.example.pkscl.service.LedgerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.jsf.FacesContextUtils;
 
 @RestController
 public class LedgerController {
@@ -54,26 +56,60 @@ public class LedgerController {
         ledgerService.addLedgerData(majorNumber, body);
     }
 
-    // @PutMapping(value = "/ledger")
-    // public void patchLedger(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
-    //     String position = (String) request.getSession(false).getAttribute("position");
-    //     String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
-    //     String patchStatus = (String) body.get("status");
-    //     List<String> emailList = (List<String>) body.get("email");
+    @DeleteMapping(value = "/ledger")
+    public void deleteLedger(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+        String position = (String) request.getSession(false).getAttribute("position");
+        String eventNumber = (String) body.get("eventNumber");
 
-    //     // 400 Bad Request
-    //     if (emailList == null || emailList.size() == 0 || patchStatus == null) {
-    //         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    //         return;
-    //     }
+        // 403 Forbidden
+        if(!position.equals("president")) {
+            response.setStatus(403);
+            return;
+        }
 
-    //     // 403 Forbidden
-    //     if (!position.equals("president")) {
-    //         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-    //         return;
-    //     }
+        ledgerService.deleteLedgerData(eventNumber);
+    }
 
-    //     // 서비스 호출 및 반환
-    //     ledgerService.putLedger(majorNumber, patchStatus, emailList);
-    // }
+    @PutMapping(value = "/ledger")
+    public void putLedger(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+        String position = (String) request.getSession(false).getAttribute("position");
+
+        // 403 Forbidden
+        if(!position.equals("president")) {
+            response.setStatus(403);
+            return;
+        }
+
+        ledgerService.putLedgerData(body);
+    }
+
+    @GetMapping(value = "/ledger-date")
+    public Map<String, Object> getLedgerDate(@RequestParam(value = "majorNumber", required = false) String adminMajorNumber, HttpServletRequest request, HttpServletResponse response) {
+        String position = (String) request.getSession(false).getAttribute("position");
+        if(position.equals("admin")) {
+            return ledgerService.getLedgerDate(adminMajorNumber);
+        }
+        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
+
+        return ledgerService.getLedgerDate(majorNumber);
+    }
+
+    @PutMapping(value = "/ledger-date")
+    public void putLedgerDate(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+        String position = (String) request.getSession(false).getAttribute("position");
+        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
+        String quarter = (String) body.get("quarter");
+        String openDate = (String) body.get("openDate");
+        String closeDate = (String) body.get("closeDate");
+
+        // 403 Forbidden
+        if(!position.equals("president")) {
+            response.setStatus(403);
+            return;
+        }
+
+        ledgerService.putLedgerDate(majorNumber, quarter, openDate, closeDate);
+    }
+
+
 }

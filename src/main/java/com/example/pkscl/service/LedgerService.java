@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.transaction.Transactional;
+
 import com.example.pkscl.domain.ledger.Event;
 import com.example.pkscl.domain.ledger.Quarter;
 import com.example.pkscl.domain.ledger.Receipt;
@@ -162,22 +165,121 @@ public class LedgerService {
         }
         return result;
     }
-
-
+    
     public void addLedgerData(String majorNumber, Map<String,Object> body){
-        String quarter = (String) body.get("quater");
-        // 이벤트 추가
+        String quarter = (String) body.get("quarter");
         String eventTitle = (String) body.get("eventTitle");
         String eventContext = (String) body.get("eventContext");
         int quarterid = quarterRepository.findByMajornumberAndQuarternumber(Integer.parseInt(majorNumber), quarter).getQuarterid();
+        List<Map<String,Object>> receiptList = (List<Map<String,Object>>) body.get("receiptList");
+
         Event event = new Event();
         event.setEventtitle(eventTitle);
         event.setEventcontext(eventContext);
         event.setQuarterid(quarterid);
-        eventRepository.save(event);
+        Event savedEvent = eventRepository.save(event);
+        for(Map<String,Object> receipt : receiptList){
+            addReceiptData(savedEvent.getEventnumber(), receipt);
+        }
     }
 
+    @Transactional
+    public void putLedgerData(Map<String,Object> body){
+        String eventNumber = (String) body.get("eventNumber");
+        String eventTitle = (String) body.get("eventTitle");
+        String eventContext = (String) body.get("eventContext");
 
+        // 이벤트 수정
+        Event event = eventRepository.findByEventnumber(Integer.parseInt(eventNumber));
+        event.setEventtitle(eventTitle);
+        event.setEventcontext(eventContext);
+        eventRepository.save(event);
+
+        // 하위 영수증 삭제
+        deleteReceiptData(eventNumber);
+
+        List<Map<String,Object>> receiptList = (List<Map<String,Object>>) body.get("receiptList");
+        for(Map<String,Object> receipt : receiptList){
+            addReceiptData(Integer.parseInt(eventNumber), receipt);
+        }
+    }
+
+    public void addReceiptData(int eventNumber, Map<String,Object> body){
+        String receiptTitle = (String) body.get("receiptTitle");
+        String receiptImg = (String) body.get("receiptImg");
+        String receiptContext = (String) body.get("receiptContext");
+        List<Map<String,Object>> receiptDetailList = (List<Map<String,Object>>) body.get("receiptDetailList");
+
+        Receipt receipt = new Receipt();
+        receipt.setReceipttitle(receiptTitle);
+        receipt.setReceiptimg(receiptImg);
+        receipt.setReceiptcontext(receiptContext);
+        receipt.setEventnumber(eventNumber);
+        Receipt savedReceipt = receiptRepository.save(receipt);
+        for(Map<String,Object> receiptDetail : receiptDetailList){
+            addReceiptDetailData(savedReceipt.getReceiptnumber(), receiptDetail);
+        }
+    }
+
+    public void addReceiptDetailData(int receiptNumber, Map<String,Object> body){
+        String context = (String) body.get("context");
+        String price = (String) body.get("price");
+        String amount = (String) body.get("amount");
+
+        Receiptdetail receiptdetail = new Receiptdetail();
+        receiptdetail.setContext(context);
+        receiptdetail.setPrice(price);
+        receiptdetail.setAmount(amount);
+        receiptdetail.setReceiptnumber(receiptNumber);
+        receiptdetailRepository.save(receiptdetail);
+    }
+
+    @Transactional
+    public void deleteLedgerData(String eventNumber){
+        
+        // eventNumber를 가진 receipt 삭제
+        deleteReceiptData(eventNumber);
+        // eventNumber를 가진 event 삭제
+        eventRepository.deleteByEventnumber(Integer.parseInt(eventNumber));
+        
+    }
+
+    @Transactional
+    public void deleteReceiptData(String eventNumber){
+
+        List<Receipt> receiptList = receiptRepository.findByEventnumber(Integer.parseInt(eventNumber));
+        for(Receipt receipt : receiptList){
+
+            // receiptNumber를 가진 receiptDetail 삭제
+            List<Receiptdetail> receiptDetailList = receiptdetailRepository.findByReceiptnumber(receipt.getReceiptnumber());
+            for(Receiptdetail receiptDetail : receiptDetailList){
+                receiptdetailRepository.delete(receiptDetail);
+            }
+
+            // eventNumber를 가진 receipt 삭제
+            receiptRepository.delete(receipt);
+        }
+
+    }
+
+    public Map<String, Object> getLedgerDate(String majorNumber){
+        Map<String, Object> result = new LinkedHashMap<>();
+        List<Quarter> quarterList = quarterRepository.findByMajornumber(Integer.parseInt(majorNumber));
+        for(Quarter quarter : quarterList){
+            String quarterNumber = quarter.getQuarternumber();
+            String openDate = quarter.getOpendate();
+            String closeDate = quarter.getClosedate();
+            result.put(quarterNumber, new String[]{openDate, closeDate});
+        }
+        return result;
+    }
+
+    public void putLedgerDate(String majorNumber, String quarterNumber, String openDate, String closeDate){
+        Quarter quarter = quarterRepository.findByMajornumberAndQuarternumber(Integer.parseInt(majorNumber), quarterNumber);
+        quarter.setOpendate(openDate);
+        quarter.setClosedate(closeDate);
+        quarterRepository.save(quarter);
+    }
     
    
     
