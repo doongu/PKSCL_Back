@@ -73,9 +73,9 @@ public class SignUpService {
     public void fileUpload(String filename, MultipartFile file, String position) throws Exception {
         String path;
         if(position.equals("student")){
-            path = System.getProperty("user.dir") + "static/static/studentCertFile/";
+            path = System.getProperty("user.dir") + "/static/static/studentCertFile/";
         }else if(position.equals("president")){
-            path = System.getProperty("user.dir") + "static/static/presidentCertFile/";
+            path = System.getProperty("user.dir") + "/static/static/presidentCertFile/";
         }else{
             throw new Exception("wrong position");
         }
