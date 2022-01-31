@@ -61,31 +61,31 @@ public class ProfileController {
     }
 
      // 학생 정보 변경
-//    @PatchMapping(value = "/profile/president") //president로 나눠야함 form양식이 달라서
-//    public Map<String,Object>  patchStudentStatus(@ModelAttribute PresidentProfileModel presidentProfileModel, MultipartFile majorLogo) {
-//
-//        // 서비스 파라미터 설정
-//        String position = (String) request.getSession(false).getAttribute("position");
-//        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
-//        String patchStatus = (String) body.get("status");
-//        List<String> emailList = (List<String>) body.get("email");
-//
-//        // 400 Bad Request
-//        if(emailList == null || emailList.size() == 0 || patchStatus == null) {
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            return;
-//        }
-//
-//        // 403 Forbidden
-//        if(!position.equals("president")) {
-//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//            return;
-//        }
-//
-//        // 서비스 호출
-//        for(String email : emailList) {
-//            memberManagementService.patchStudentStatus(email, patchStatus, majorNumber);
-//        }
-//    }
+    @PatchMapping(value = "/profile/president") //president로 나눠야함 form양식이 달라서
+    public Map<String,Object>  patchStudentStatus(@ModelAttribute PresidentProfileModel presidentProfileModel, MultipartFile majorLogo) {
+
+        // 서비스 파라미터 설정
+        String position = (String) request.getSession(false).getAttribute("position");
+        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
+        String patchStatus = (String) body.get("status");
+        List<String> emailList = (List<String>) body.get("email");
+
+        // 400 Bad Request
+        if(emailList == null || emailList.size() == 0 || patchStatus == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        // 403 Forbidden
+        if(!position.equals("president")) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        // 서비스 호출
+        for(String email : emailList) {
+            memberManagementService.patchStudentStatus(email, patchStatus, majorNumber);
+        }
+    }
 
 }
