@@ -2,7 +2,6 @@ package com.example.pkscl.domain.ledger;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 
 import lombok.Data;
 

@@ -163,16 +163,19 @@ public class LedgerService {
         return result;
     }
 
-    // public void addLedgerData(String majorNumber, Map<String,Object> body){
-    //     String quarter = (String) body.get("quater");
-    //     // 이벤트 추가
-    //     String eventTitle = (String) body.get("eventTitle");
-    //     String eventContext = (String) body.get("eventContext");
-    //     Event event = new Event();
-    //     event.setMajornumber(Integer.parseInt(majorNumber));
-    //     event.setQuarternumber(quarter);
 
-    // }
+    public void addLedgerData(String majorNumber, Map<String,Object> body){
+        String quarter = (String) body.get("quater");
+        // 이벤트 추가
+        String eventTitle = (String) body.get("eventTitle");
+        String eventContext = (String) body.get("eventContext");
+        int quarterid = quarterRepository.findByMajornumberAndQuarternumber(Integer.parseInt(majorNumber), quarter).getQuarterid();
+        Event event = new Event();
+        event.setEventtitle(eventTitle);
+        event.setEventcontext(eventContext);
+        event.setQuarterid(quarterid);
+        eventRepository.save(event);
+    }
 
 
     

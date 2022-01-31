@@ -56,7 +56,7 @@ public class SignUpController {
             return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
         }
 
-        signUpService.fileUpload(filename+ext, certFile,"student");
+        signUpService.fileUpload(filename+ext, certFile);
         if(!signUpService.signUpStudent(student)) {
             Map<String,Object> errorMsg = new LinkedHashMap<>();
             errorMsg.put("errorMessage", "이메일 인증이 완료되지 않았습니다.");
@@ -82,11 +82,6 @@ public class SignUpController {
         president.setMajornumber(presidentModel.getMajor());
         president.setStudentid(presidentModel.getStdID());
         president.setPhonenumber(presidentModel.getPhoneNumber());
-
-        // file_name을 현재시간을 기준으로 yyyyMMddHHmmssSSS.jpg 형태로 설정
-        String filename = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
-        String ext = certFile.getOriginalFilename().substring(certFile.getOriginalFilename().lastIndexOf("."));
-        president.setCertfilepath(filename+ext);
         
         //중복확인후 400반환
         if(!signUpService.presidentCheckEmail(president.getEmail())) {
@@ -95,7 +90,6 @@ public class SignUpController {
             return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
         }
 
-        signUpService.fileUpload(filename+ext,certFile,"president");
         if(!signUpService.signUpPresident(president)) {
             Map<String,Object> errorMsg = new LinkedHashMap<>();
             errorMsg.put("errorMessage", "이메일 인증이 완료되지 않았습니다.");

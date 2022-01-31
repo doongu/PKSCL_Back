@@ -1,7 +1,5 @@
 package com.example.pkscl.controller;
 
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,12 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.example.pkscl.service.LedgerService;
 
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,20 +40,19 @@ public class LedgerController {
         return ledgerService.getLedgerData(majorNumber, position);
     }
 
-    // 장부 데이터 추가
-    // @PostMapping(value = "/ledger")
-    // public Map<String, Object> addLedger(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
-    //     String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
-    //     String position = (String) request.getSession(false).getAttribute("position");
+    @PostMapping(value = "/ledger")
+    public void addLedger(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
+        String position = (String) request.getSession(false).getAttribute("position");
 
-    //     // 403 Forbidden
-    //     if(!position.equals("president")) {
-    //         response.setStatus(403);
-    //         return null;
-    //     }
+        // 403 Forbidden
+        if(!position.equals("president")) {
+            response.setStatus(403);
+            return;
+        }
 
-    //     return ledgerService.addLedgerData(majorNumber, body);
-    // }
+        ledgerService.addLedgerData(majorNumber, body);
+    }
 
     // @PutMapping(value = "/ledger")
     // public void patchLedger(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
