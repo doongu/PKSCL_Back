@@ -1,5 +1,7 @@
 package com.example.pkscl.controller;
 
+import com.example.pkscl.domain.member.PresidentModel;
+import com.example.pkscl.domain.member.PresidentProfileModel;
 import com.example.pkscl.service.ProfileService;
 
 import java.io.IOException;
@@ -58,9 +60,9 @@ public class ProfileController {
         return profileService.getProfileData(position, email, majorNumber);
     }
 
-    // 학생 정보 변경
-//    @PatchMapping(value = "/profile")
-//    public void patchStudentStatus(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+     // 학생 정보 변경
+//    @PatchMapping(value = "/profile/president") //president로 나눠야함 form양식이 달라서
+//    public Map<String,Object>  patchStudentStatus(@ModelAttribute PresidentProfileModel presidentProfileModel, MultipartFile majorLogo) {
 //
 //        // 서비스 파라미터 설정
 //        String position = (String) request.getSession(false).getAttribute("position");

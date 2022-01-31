@@ -49,7 +49,7 @@ public class ProfileService {
             profileInfo.put("major", majorName);
             profileInfo.put("name", name);
             profileInfo.put("email", pEmail);
-            profileInfo.put("stdImgPath", certfilepath);
+            profileInfo.put("majorLogo", certfilepath);
         }
 
         else if(position == "president"){
@@ -61,15 +61,14 @@ public class ProfileService {
             String name = profileData.getName();
             String phoneNumber = profileData.getPhonenumber();
             String pEmail = profileData.getEmail();
-            String certfilepath = profileData.getCertfilepath();
+           // String majorLogo = profileData.getMajorlogo();
 
             profileInfo.put("stdID", studentId);
             profileInfo.put("major", majorName);
             profileInfo.put("name", name);
             profileInfo.put("phoneNumber", phoneNumber);
             profileInfo.put("email", pEmail);
-            profileInfo.put("presidentImgPath", certfilepath);
-            profileInfo.put("majorLogo", "nothing");
+           // profileInfo.put("majorLogo", majorLogo);
         }
 
         return profileInfo;
