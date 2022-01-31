@@ -97,7 +97,7 @@ public class MemberManagementService {
             String stdID = president.getStudentid();
             String name = president.getName();
             String phoneNumber = president.getPhonenumber();
-            String studentImgPath = president.getCertfilepath();
+            String studentImgPath = president.getMajorlogo();
 
             LinkedHashMap<String, Object> presidentInfo = new LinkedHashMap<>();
             presidentInfo.put("major", majorName);
