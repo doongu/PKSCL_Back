@@ -158,9 +158,11 @@ public class LedgerService {
             String context = receiptdetail.getContext();
             String price = receiptdetail.getPrice();
             String amount = receiptdetail.getAmount();
+            String totalAmount = Integer.parseInt(price) * Integer.parseInt(amount) + "";
             receiptdetailMap.put("context", context);
             receiptdetailMap.put("price", price);
             receiptdetailMap.put("amount", amount);
+            receiptdetailMap.put("totalAmount", totalAmount);
             result.add(receiptdetailMap);
         }
         return result;
