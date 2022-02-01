@@ -14,6 +14,8 @@ import java.util.Map;
 
 import com.example.pkscl.repository.MajorRepository;
 
+import javax.transaction.Transactional;
+
 
 @Service
 public class ProfileService {
@@ -74,58 +76,22 @@ public class ProfileService {
         return profileInfo;
 
     }
+    @Transactional
+     public void putStudentProfileData(String email, String stdID, int major,String name) {
+            Student profileData = studentRepository.findByEmail(email);
+            profileData.setStudentid(stdID);
+            profileData.setMajornumber(major);
+            profileData.setName(name);
+            studentRepository.save(profileData);
+     }
 
-    // public LinkedHashMap<String, Object> getPresidentData() {
-        
-    //     // 학과회장을 리스트 형식으로 받아옴
-    //     List<President> presidents = presidentRepository.findAll();
-
-    //     LinkedHashMap<String, Object> presidentList = new LinkedHashMap<>();
-    //     List<LinkedHashMap<String, Object>> waitingList = new ArrayList<>();
-    //     List<LinkedHashMap<String, Object>> refusalList = new ArrayList<>();
-    //     List<LinkedHashMap<String, Object>> approvalList = new ArrayList<>();
-
-    //     for(President president : presidents) {
-    //         String status = president.getStatus();
-    //         String majorNumber = String.valueOf(president.getMajornumber());
-    //         String majorName = majorRepository.findByMajornumber(majorNumber).getMajorname();
-    //         String email = president.getEmail();
-    //         String stdID = president.getStudentid();
-    //         String name = president.getName();
-    //         String phoneNumber = president.getPhonenumber();
-    //         String studentImgPath = president.getCertfilepath();
-
-    //         LinkedHashMap<String, Object> presidentInfo = new LinkedHashMap<>();
-    //         presidentInfo.put("major", majorName);
-    //         presidentInfo.put("email", email);
-    //         presidentInfo.put("stdID", stdID);
-    //         presidentInfo.put("name", name);
-    //         presidentInfo.put("phoneNumber", phoneNumber);
-    //         presidentInfo.put("studentImgPath", studentImgPath);
-
-    //         if(status.equals("waiting")) {
-    //             waitingList.add(presidentInfo);
-    //         }
-    //         else if (status.equals("refusal")) {
-    //             refusalList.add(presidentInfo);
-    //         }
-    //         else if (status.equals("approval")) {
-    //             approvalList.add(presidentInfo);
-    //         }
-    //     }
-
-    //     presidentList.put("waiting", waitingList );
-    //     presidentList.put("refusal", refusalList );
-    //     presidentList.put("approval", approvalList );
-
-    //     return presidentList;
-        
-    // }
-
-    // public void patchPresidentStatus(String email, String patchStatus) {
-    //     President president = presidentRepository.findByEmail(email);
-    //     president.setStatus(patchStatus);
-    //     presidentRepository.save(president);
-    // }
+    @Transactional
+     public void putPresidentProfileData(String email, String stdID, String name, String phoneNumber) {
+            President profileData = presidentRepository.findByEmail(email);
+            profileData.setStudentid(stdID);
+            profileData.setName(name);
+            profileData.setPhonenumber(phoneNumber);
+            presidentRepository.save(profileData);
+    }
     
 }
