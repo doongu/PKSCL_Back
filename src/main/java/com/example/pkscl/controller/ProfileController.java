@@ -58,8 +58,8 @@ public class ProfileController {
     public void patchStudentStatus(@ModelAttribute StudentProfileModel studentProfileModel, MultipartFile certFile,  HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         // 403
-        if(studentProfileModel.getStdID() == null || studentProfileModel.getMajor() == 0 ||
-                studentProfileModel.getName() == null) {
+        if(studentProfileModel.getStdID().equals(null) || studentProfileModel.getMajor() == 0 ||
+                studentProfileModel.getName().equals(null)) {
             Map<String,Object> errorMsg = new LinkedHashMap<>();
 //            errorMsg.put("errorMessage", "정보 변경에 실패하였습니다. 모든 정보를 입력해 주세요.");
             response.setStatus(403);
@@ -84,11 +84,11 @@ public class ProfileController {
     }
 
     @PutMapping(value = "/profile/president") //president로 나눠야함 form양식이 달라서
-    public void patchStudentStatus(@ModelAttribute PresidentProfileModel presidentProfileModel, MultipartFile majorLogo,  HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public void patchPresidentStatus(@ModelAttribute PresidentProfileModel presidentProfileModel, MultipartFile majorLogo,  HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         // 403 Forbidden
-        if(presidentProfileModel.getStdID() == null || presidentProfileModel.getPhoneNumber() == null ||
-                presidentProfileModel.getName() == null) {
+        if(presidentProfileModel.getStdID().equals(null) || presidentProfileModel.getPhoneNumber().equals(null) ||
+                presidentProfileModel.getName().equals(null)) {
 //            Map<String,Object> errorMsg = new LinkedHashMap<>();
 //            errorMsg.put("errorMessage", "정보 변경에 실패하였습니다. 모든 정보를 입력해 주세요.");
             response.setStatus(403);
@@ -109,4 +109,36 @@ public class ProfileController {
         profileService.putPresidentProfileData(email, stdID, name, phoneNumber, filename+ext);
     }
 
+    @PatchMapping(value = "/password")
+    public void patchPassword(@RequestBody Map<String, Object> body,  HttpServletRequest request, HttpServletResponse response){
+
+        String email =(String) request.getSession(false).getAttribute("email");
+        String position = (String) request.getSession(false).getAttribute("position");
+        
+        String inputPassword = (String) body.get("inputPassword");
+        String inputNewPassword = (String) body.get("inputNewPassword");
+        String inputCheckNewPassword = (String) body.get("inputCheckNewPassword");
+
+        // 403 Forbidden
+        if(inputPassword.equals(null) || inputNewPassword .equals(null)||  !inputNewPassword.equals(inputCheckNewPassword)) {
+            response.setStatus(403); return;
+        }
+
+        else if(position.equals("student")){
+        // 학생 기존 비번이랑 같은지 체크
+            if ( !inputPassword.equals(profileService.getStudentPassword(email))) {
+                response.setStatus(401); return;
+            }
+            else profileService.patchStudentPassword(email, inputNewPassword);
+        }
+
+        else if(position.equals("president")){
+        // 학생 기존 비번이랑 같은지 체크
+            if( !inputPassword.equals(profileService.getPresidentPassword(email) )) {
+                response.setStatus(401); return;
+            }
+            else profileService.patchPresidentPassword(email, inputNewPassword);
+        }
+
+ }
 }
