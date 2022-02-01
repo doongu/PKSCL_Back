@@ -1,7 +1,6 @@
 package com.example.pkscl.controller;
 
-import com.example.pkscl.domain.member.PresidentModel;
-import com.example.pkscl.domain.member.PresidentProfileModel;
+import com.example.pkscl.domain.member.*;
 import com.example.pkscl.service.ProfileService;
 
 import java.io.IOException;
@@ -11,14 +10,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,11 +27,11 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    // 학생 및 학과회장 정보로드 
+    // 학생 및 학과회장 정보로드
     @GetMapping(value = "/profile")
     public Map<String,Object> studentProfile(HttpServletRequest request, HttpServletResponse response) {
 
- 
+
 
         // 세션 여부를 판단하기 위한 변수 설정
         String email = (String) request.getSession(false).getAttribute("email");
@@ -60,32 +53,60 @@ public class ProfileController {
         return profileService.getProfileData(position, email, majorNumber);
     }
 
-     // 학생 정보 변경
-//    @PatchMapping(value = "/profile/president") //president로 나눠야함 form양식이 달라서
-//    public Map<String,Object>  patchStudentStatus(@ModelAttribute PresidentProfileModel presidentProfileModel, MultipartFile majorLogo) {
-//
-//        // 서비스 파라미터 설정
-//        String position = (String) request.getSession(false).getAttribute("position");
-//        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
-//        String patchStatus = (String) body.get("status");
-//        List<String> emailList = (List<String>) body.get("email");
-//
-//        // 400 Bad Request
-//        if(emailList == null || emailList.size() == 0 || patchStatus == null) {
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            return;
-//        }
-//
-//        // 403 Forbidden
-//        if(!position.equals("president")) {
-//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//            return;
-//        }
-//
-//        // 서비스 호출
-//        for(String email : emailList) {
-//            memberManagementService.patchStudentStatus(email, patchStatus, majorNumber);
-//        }
-//    }
+    // 학생 정보 변경
+    @PutMapping(value = "/profile/student") //president로 나눠야함 form양식이 달라서
+    public void patchStudentStatus(@ModelAttribute StudentProfileModel studentProfileModel, MultipartFile certFile,  HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+        // 403
+        if(studentProfileModel.getStdID() == null || studentProfileModel.getMajor() == 0 ||
+                studentProfileModel.getName() == null) {
+            Map<String,Object> errorMsg = new LinkedHashMap<>();
+//            errorMsg.put("errorMessage", "정보 변경에 실패하였습니다. 모든 정보를 입력해 주세요.");
+            response.setStatus(403);
+            return;
+        }
+
+        // 세션서 이메일값을 받아온다.
+        String email = (String) request.getSession(false).getAttribute("email");
+
+        String stdID = studentProfileModel.getStdID();
+        int major =  studentProfileModel.getMajor();
+        String name  = studentProfileModel.getName();
+
+        String filename = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
+        String ext = certFile.getOriginalFilename().substring(certFile.getOriginalFilename().lastIndexOf("."));
+
+        // 레포에 업데이트
+        profileService.fileUploadStd(filename+ext, certFile);
+        profileService.putStudentProfileData(email, stdID, major, name, filename+ext);
+
+
+    }
+
+    @PutMapping(value = "/profile/president") //president로 나눠야함 form양식이 달라서
+    public void patchStudentStatus(@ModelAttribute PresidentProfileModel presidentProfileModel, MultipartFile majorLogo,  HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+        // 403 Forbidden
+        if(presidentProfileModel.getStdID() == null || presidentProfileModel.getPhoneNumber() == null ||
+                presidentProfileModel.getName() == null) {
+//            Map<String,Object> errorMsg = new LinkedHashMap<>();
+//            errorMsg.put("errorMessage", "정보 변경에 실패하였습니다. 모든 정보를 입력해 주세요.");
+            response.setStatus(403);
+            return;
+        }
+
+        String email = (String) request.getSession(false).getAttribute("email");
+
+        String stdID = presidentProfileModel.getStdID();
+        String name = presidentProfileModel.getName();
+        String phoneNumber= presidentProfileModel.getPhoneNumber();
+
+
+        String filename = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
+        String ext = majorLogo.getOriginalFilename().substring(majorLogo.getOriginalFilename().lastIndexOf("."));
+
+        profileService.fileUploadLogo(filename+ext, majorLogo);
+        profileService.putPresidentProfileData(email, stdID, name, phoneNumber, filename+ext);
+    }
 
 }

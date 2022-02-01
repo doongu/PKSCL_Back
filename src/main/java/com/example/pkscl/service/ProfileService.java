@@ -7,12 +7,17 @@ import com.example.pkscl.repository.PresidentRepository;
 import com.example.pkscl.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.example.pkscl.repository.MajorRepository;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.transaction.Transactional;
 
 
 @Service
@@ -61,71 +66,51 @@ public class ProfileService {
             String name = profileData.getName();
             String phoneNumber = profileData.getPhonenumber();
             String pEmail = profileData.getEmail();
-           // String majorLogo = profileData.getMajorlogo();
+            // String majorLogo = profileData.getMajorlogo();
 
             profileInfo.put("stdID", studentId);
             profileInfo.put("major", majorName);
             profileInfo.put("name", name);
             profileInfo.put("phoneNumber", phoneNumber);
             profileInfo.put("email", pEmail);
-           // profileInfo.put("majorLogo", majorLogo);
+            // profileInfo.put("majorLogo", majorLogo);
         }
 
         return profileInfo;
 
     }
 
-    // public LinkedHashMap<String, Object> getPresidentData() {
-        
-    //     // 학과회장을 리스트 형식으로 받아옴
-    //     List<President> presidents = presidentRepository.findAll();
+    public void fileUploadStd(String filename, MultipartFile file) throws Exception {
+        String path = System.getProperty("user.dir") + "/static/static/studentCertFile/";
+        File saveFile = new File(path + filename);
+        file.transferTo(saveFile);
+    }
 
-    //     LinkedHashMap<String, Object> presidentList = new LinkedHashMap<>();
-    //     List<LinkedHashMap<String, Object>> waitingList = new ArrayList<>();
-    //     List<LinkedHashMap<String, Object>> refusalList = new ArrayList<>();
-    //     List<LinkedHashMap<String, Object>> approvalList = new ArrayList<>();
+    public void fileUploadLogo(String filename, MultipartFile file) throws Exception {
+        String path = System.getProperty("user.dir") + "/static/static/majorLogo/";
+        File saveFile = new File(path + filename);
+        file.transferTo(saveFile);
+    }
 
-    //     for(President president : presidents) {
-    //         String status = president.getStatus();
-    //         String majorNumber = String.valueOf(president.getMajornumber());
-    //         String majorName = majorRepository.findByMajornumber(majorNumber).getMajorname();
-    //         String email = president.getEmail();
-    //         String stdID = president.getStudentid();
-    //         String name = president.getName();
-    //         String phoneNumber = president.getPhonenumber();
-    //         String studentImgPath = president.getCertfilepath();
+    @Transactional
+    public void putStudentProfileData(String email, String stdID, int major,String name, String certFilePath) {
+        Student profileData = studentRepository.findByEmail(email);
+        profileData.setStudentid(stdID);
+        profileData.setMajornumber(major);
+        profileData.setName(name);
+        profileData.setCertfilepath( "/static/static/studentCertFile/" + certFilePath);
+        studentRepository.save(profileData);
+    }
 
-    //         LinkedHashMap<String, Object> presidentInfo = new LinkedHashMap<>();
-    //         presidentInfo.put("major", majorName);
-    //         presidentInfo.put("email", email);
-    //         presidentInfo.put("stdID", stdID);
-    //         presidentInfo.put("name", name);
-    //         presidentInfo.put("phoneNumber", phoneNumber);
-    //         presidentInfo.put("studentImgPath", studentImgPath);
+    @Transactional
+    public void putPresidentProfileData(String email, String stdID, String name, String phoneNumber, String majorLogoPath) {
+        President profileData = presidentRepository.findByEmail(email);
+        profileData.setStudentid(stdID);
+        profileData.setName(name);
+        profileData.setPhonenumber(phoneNumber);
+        profileData.setMajorlogo( "/static/static/majorLogo/" + majorLogoPath);
 
-    //         if(status.equals("waiting")) {
-    //             waitingList.add(presidentInfo);
-    //         }
-    //         else if (status.equals("refusal")) {
-    //             refusalList.add(presidentInfo);
-    //         }
-    //         else if (status.equals("approval")) {
-    //             approvalList.add(presidentInfo);
-    //         }
-    //     }
+        presidentRepository.save(profileData);
+    }
 
-    //     presidentList.put("waiting", waitingList );
-    //     presidentList.put("refusal", refusalList );
-    //     presidentList.put("approval", approvalList );
-
-    //     return presidentList;
-        
-    // }
-
-    // public void patchPresidentStatus(String email, String patchStatus) {
-    //     President president = presidentRepository.findByEmail(email);
-    //     president.setStatus(patchStatus);
-    //     presidentRepository.save(president);
-    // }
-    
 }
