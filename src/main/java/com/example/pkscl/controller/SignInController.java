@@ -1,7 +1,6 @@
 package com.example.pkscl.controller;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +10,6 @@ import javax.servlet.http.HttpSession;
 import com.example.pkscl.service.SignInService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -116,7 +113,6 @@ public class SignInController {
         session.setAttribute("id", id);
 
     }
-
 
     @PostMapping("/logout") 
     public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException

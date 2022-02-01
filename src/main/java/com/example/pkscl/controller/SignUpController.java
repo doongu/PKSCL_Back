@@ -1,16 +1,15 @@
 package com.example.pkscl.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import com.example.pkscl.domain.member.President;
 import com.example.pkscl.domain.member.PresidentModel;
@@ -29,15 +28,16 @@ public class SignUpController {
     }
 
     @PostMapping(value = "/signup/student")
-    public ResponseEntity<Map<String,Object>> signUpStudent(@ModelAttribute StudentModel studentModel, MultipartFile certFile) throws Exception {
+    public void signUpStudent(@ModelAttribute StudentModel studentModel, MultipartFile certFile, HttpServletResponse response) throws Exception {
 
         Student student = new Student();
         student.setEmail(studentModel.getEmail());
         String password = studentModel.getPassword();
+
+        // 401 Unauthorized
         if(!password.equals(studentModel.getCheckPassword())) {
-            Map<String,Object> errorMsg = new LinkedHashMap<>();
-            errorMsg.put("errorMessage", "비밀번호가 일치하지 않습니다.");
-            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+            response.setStatus(401);
+            return;
         }
         student.setPassword(password);
         student.setMajornumber(studentModel.getMajor());
@@ -51,31 +51,28 @@ public class SignUpController {
 
         //중복확인후 400반환
         if(!signUpService.studentCheckEmail(student.getEmail())) {
-            Map<String,Object> errorMsg = new LinkedHashMap<>();
-            errorMsg.put("errorMessage", "이미 가입된 이메일입니다.");
-            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+            response.setStatus(409);
+            return;
         }
 
         signUpService.fileUpload(filename+ext, certFile);
         if(!signUpService.signUpStudent(student)) {
-            Map<String,Object> errorMsg = new LinkedHashMap<>();
-            errorMsg.put("errorMessage", "이메일 인증이 완료되지 않았습니다.");
-            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+            response.setStatus(403);
         }
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        
     }
 
     @PostMapping(value = "/signup/president")
-    public ResponseEntity<Map<String,Object>> signUpPresident(@ModelAttribute PresidentModel presidentModel, MultipartFile certFile) throws Exception {
+    public void signUpPresident(@ModelAttribute PresidentModel presidentModel, MultipartFile certFile, HttpServletResponse response) throws Exception {
 
         President president = new President();
         president.setEmail(presidentModel.getEmail());
         String password = presidentModel.getPassword();
+
+        // 401 Unauthorized
         if(!password.equals(presidentModel.getCheckPassword())) {
-            Map<String,Object> errorMsg = new LinkedHashMap<>();
-            errorMsg.put("errorMessage", "비밀번호가 일치하지 않습니다.");
-            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+            response.setStatus(401);
+            return;
         }
         president.setPassword(password);
         president.setName(presidentModel.getName());
@@ -85,25 +82,18 @@ public class SignUpController {
         
         //중복확인후 400반환
         if(!signUpService.presidentCheckEmail(president.getEmail())) {
-            Map<String,Object> errorMsg = new LinkedHashMap<>();
-            errorMsg.put("errorMessage", "이미 가입된 이메일입니다.");
-            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+            response.setStatus(409);
+            return;
         }
 
         if(!signUpService.signUpPresident(president)) {
-            Map<String,Object> errorMsg = new LinkedHashMap<>();
-            errorMsg.put("errorMessage", "이메일 인증이 완료되지 않았습니다.");
-            return new ResponseEntity<>(errorMsg,HttpStatus.BAD_REQUEST);
+            response.setStatus(403);
         }
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/major-list")
-    public ResponseEntity<LinkedHashMap<String,Object>> getMajorList() {
-        LinkedHashMap<String,Object> result = new LinkedHashMap<>();
-        result.put("majorList", signUpService.getMajorList());
-        return new ResponseEntity<>(result,HttpStatus.OK);
+    public Map<String,Object> getMajorList() {
+        return signUpService.getMajorList();
     }
 
 }

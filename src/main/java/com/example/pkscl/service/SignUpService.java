@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.example.pkscl.domain.major.Major;
@@ -77,8 +79,10 @@ public class SignUpService {
     }
 
     // major의 majorname 목록 반환
-    public List<String> getMajorList() {
+    public Map<String,Object> getMajorList() {
         List<String> majorList = majorRepository.findAll().stream().map(Major::getMajorname).collect(Collectors.toList());
-        return majorList;
+        LinkedHashMap<String,Object> result = new LinkedHashMap<>();
+        result.put("majorList", majorList);
+        return result;
     }
 }

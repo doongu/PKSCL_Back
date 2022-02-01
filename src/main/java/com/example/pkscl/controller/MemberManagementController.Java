@@ -26,6 +26,7 @@ public class MemberManagementController {
 
         // 서비스 파라미터 설정
         String position = (String) request.getSession(false).getAttribute("position");
+        String status = (String) request.getSession(false).getAttribute("status");
         String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
 
         // 400 Bad Request
@@ -35,7 +36,7 @@ public class MemberManagementController {
         }
 
         // 403 Forbidden
-        if(!position.equals("president")) {
+        if(!position.equals("president") || !status.equals("approval")) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return null;
         }
@@ -49,6 +50,7 @@ public class MemberManagementController {
 
         // 서비스 파라미터 설정
         String position = (String) request.getSession(false).getAttribute("position");
+        String status = (String) request.getSession(false).getAttribute("status");
         String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
         String patchStatus = (String) body.get("status");
         List<String> emailList = (List<String>) body.get("email");
@@ -60,7 +62,7 @@ public class MemberManagementController {
         }
 
         // 403 Forbidden
-        if(!position.equals("president")) {
+        if(!position.equals("president") || !status.equals("approval")) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -112,8 +114,5 @@ public class MemberManagementController {
             memberManagementService.patchPresidentStatus(email, patchStatus);
         }
     }
-
-
-
 
 }
