@@ -7,12 +7,15 @@ import com.example.pkscl.repository.PresidentRepository;
 import com.example.pkscl.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.example.pkscl.repository.MajorRepository;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 
@@ -76,22 +79,38 @@ public class ProfileService {
         return profileInfo;
 
     }
+
+    public void fileUploadStd(String filename, MultipartFile file) throws Exception {
+        String path = System.getProperty("user.dir") + "/static/static/studentCertFile/";
+        File saveFile = new File(path + filename);
+        file.transferTo(saveFile);
+    }
+
+    public void fileUploadLogo(String filename, MultipartFile file) throws Exception {
+        String path = System.getProperty("user.dir") + "/static/static/majorLogo/";
+        File saveFile = new File(path + filename);
+        file.transferTo(saveFile);
+    }
+
     @Transactional
-     public void putStudentProfileData(String email, String stdID, int major,String name) {
+     public void putStudentProfileData(String email, String stdID, int major,String name, String certFilePath) {
             Student profileData = studentRepository.findByEmail(email);
             profileData.setStudentid(stdID);
             profileData.setMajornumber(major);
             profileData.setName(name);
-            studentRepository.save(profileData);
-     }
+        profileData.setCertfilepath(certFilePath);
+        studentRepository.save(profileData);
+    }
 
     @Transactional
-     public void putPresidentProfileData(String email, String stdID, String name, String phoneNumber) {
+     public void putPresidentProfileData(String email, String stdID, String name, String phoneNumber, String majorLogoPath) {
             President profileData = presidentRepository.findByEmail(email);
             profileData.setStudentid(stdID);
             profileData.setName(name);
             profileData.setPhonenumber(phoneNumber);
-            presidentRepository.save(profileData);
+            profileData.setMajorlogo(majorLogoPath);
+
+        presidentRepository.save(profileData);
     }
     
 }

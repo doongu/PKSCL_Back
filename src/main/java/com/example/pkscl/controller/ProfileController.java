@@ -55,7 +55,7 @@ public class ProfileController {
 
      // 학생 정보 변경
     @PutMapping(value = "/profile/student") //president로 나눠야함 form양식이 달라서
-    public void patchStudentStatus(@ModelAttribute StudentProfileModel studentProfileModel, MultipartFile certFile,  HttpServletRequest request, HttpServletResponse response) {
+    public void patchStudentStatus(@ModelAttribute StudentProfileModel studentProfileModel, MultipartFile certFile,  HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         // 403
         if(studentProfileModel.getStdID() == null || studentProfileModel.getMajor() == 0 ||
@@ -73,14 +73,18 @@ public class ProfileController {
         int major =  studentProfileModel.getMajor();
         String name  = studentProfileModel.getName();
 
+        String filename = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
+        String ext = certFile.getOriginalFilename().substring(certFile.getOriginalFilename().lastIndexOf("."));
+
         // 레포에 업데이트
-        profileService.putStudentProfileData(email, stdID, major, name);
+        profileService.fileUploadLogo(filename+ext, certFile);
+        profileService.putStudentProfileData(email, stdID, major, name, filename+ext);
 
 
     }
 
     @PutMapping(value = "/profile/president") //president로 나눠야함 form양식이 달라서
-    public void patchStudentStatus(@ModelAttribute PresidentProfileModel presidentProfileModel, MultipartFile majorLogo,  HttpServletRequest request, HttpServletResponse response) {
+    public void patchStudentStatus(@ModelAttribute PresidentProfileModel presidentProfileModel, MultipartFile majorLogo,  HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         // 403 Forbidden
         if(presidentProfileModel.getStdID() == null || presidentProfileModel.getPhoneNumber() == null ||
@@ -97,7 +101,12 @@ public class ProfileController {
         String name = presidentProfileModel.getName();
         String phoneNumber= presidentProfileModel.getPhoneNumber();
 
-        profileService.putPresidentProfileData(email, stdID, name, phoneNumber);
+
+        String filename = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
+        String ext = majorLogo.getOriginalFilename().substring(majorLogo.getOriginalFilename().lastIndexOf("."));
+
+        profileService.fileUploadLogo(filename+ext, majorLogo);
+        profileService.putPresidentProfileData(email, stdID, name, phoneNumber, filename+ext);
     }
 
 }
