@@ -6,6 +6,7 @@ import com.example.pkscl.domain.member.Student;
 import com.example.pkscl.repository.PresidentRepository;
 import com.example.pkscl.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -26,13 +27,15 @@ public class ProfileService {
     private final StudentRepository studentRepository;
     private final PresidentRepository presidentRepository;
     private final MajorRepository majorRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public ProfileService(StudentRepository studentRepository, PresidentRepository presidentRepository, MajorRepository majorRepository) {
+    public ProfileService(StudentRepository studentRepository, PresidentRepository presidentRepository, MajorRepository majorRepository,  PasswordEncoder passwordEncoder) {
         this.studentRepository = studentRepository;
         this.presidentRepository = presidentRepository;
         this.majorRepository = majorRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -113,4 +116,27 @@ public class ProfileService {
         presidentRepository.save(profileData);
     }
 
+    public String getStudentPassword(String email) {
+        Student student = studentRepository.findByEmail(email);
+        return student.getPassword();
+    }
+
+    public String getPresidentPassword(String email){
+        President president = presidentRepository.findByEmail(email);
+        return president.getPassword();
+    }
+
+    public void patchStudentPassword(String email, String newPassword){
+        Student student = studentRepository.findByEmail(email);
+        student.setPassword(passwordEncoder.encode(newPassword));
+
+        studentRepository.save(student);
+    }
+
+    public void patchPresidentPassword(String email, String newPassword){
+        President president = presidentRepository.findByEmail(email);
+        president.setPassword(passwordEncoder.encode(newPassword));
+
+        presidentRepository.save(president);
+    }
 }
