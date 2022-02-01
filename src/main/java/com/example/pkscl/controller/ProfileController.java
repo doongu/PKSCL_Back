@@ -27,11 +27,11 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    // 학생 및 학과회장 정보로드 
+    // 학생 및 학과회장 정보로드
     @GetMapping(value = "/profile")
     public Map<String,Object> studentProfile(HttpServletRequest request, HttpServletResponse response) {
 
- 
+
 
         // 세션 여부를 판단하기 위한 변수 설정
         String email = (String) request.getSession(false).getAttribute("email");
@@ -53,7 +53,7 @@ public class ProfileController {
         return profileService.getProfileData(position, email, majorNumber);
     }
 
-     // 학생 정보 변경
+    // 학생 정보 변경
     @PutMapping(value = "/profile/student") //president로 나눠야함 form양식이 달라서
     public void patchStudentStatus(@ModelAttribute StudentProfileModel studentProfileModel, MultipartFile certFile,  HttpServletRequest request, HttpServletResponse response) throws Exception{
 
@@ -77,7 +77,7 @@ public class ProfileController {
         String ext = certFile.getOriginalFilename().substring(certFile.getOriginalFilename().lastIndexOf("."));
 
         // 레포에 업데이트
-        profileService.fileUploadLogo(filename+ext, certFile);
+        profileService.fileUploadStd(filename+ext, certFile);
         profileService.putStudentProfileData(email, stdID, major, name, filename+ext);
 
 

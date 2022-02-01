@@ -66,14 +66,14 @@ public class ProfileService {
             String name = profileData.getName();
             String phoneNumber = profileData.getPhonenumber();
             String pEmail = profileData.getEmail();
-           // String majorLogo = profileData.getMajorlogo();
+            // String majorLogo = profileData.getMajorlogo();
 
             profileInfo.put("stdID", studentId);
             profileInfo.put("major", majorName);
             profileInfo.put("name", name);
             profileInfo.put("phoneNumber", phoneNumber);
             profileInfo.put("email", pEmail);
-           // profileInfo.put("majorLogo", majorLogo);
+            // profileInfo.put("majorLogo", majorLogo);
         }
 
         return profileInfo;
@@ -93,24 +93,24 @@ public class ProfileService {
     }
 
     @Transactional
-     public void putStudentProfileData(String email, String stdID, int major,String name, String certFilePath) {
-            Student profileData = studentRepository.findByEmail(email);
-            profileData.setStudentid(stdID);
-            profileData.setMajornumber(major);
-            profileData.setName(name);
-        profileData.setCertfilepath(certFilePath);
+    public void putStudentProfileData(String email, String stdID, int major,String name, String certFilePath) {
+        Student profileData = studentRepository.findByEmail(email);
+        profileData.setStudentid(stdID);
+        profileData.setMajornumber(major);
+        profileData.setName(name);
+        profileData.setCertfilepath( "/static/static/studentCertFile/" + certFilePath);
         studentRepository.save(profileData);
     }
 
     @Transactional
-     public void putPresidentProfileData(String email, String stdID, String name, String phoneNumber, String majorLogoPath) {
-            President profileData = presidentRepository.findByEmail(email);
-            profileData.setStudentid(stdID);
-            profileData.setName(name);
-            profileData.setPhonenumber(phoneNumber);
-            profileData.setMajorlogo(majorLogoPath);
+    public void putPresidentProfileData(String email, String stdID, String name, String phoneNumber, String majorLogoPath) {
+        President profileData = presidentRepository.findByEmail(email);
+        profileData.setStudentid(stdID);
+        profileData.setName(name);
+        profileData.setPhonenumber(phoneNumber);
+        profileData.setMajorlogo( "/static/static/majorLogo/" + majorLogoPath);
 
         presidentRepository.save(profileData);
     }
-    
+
 }
