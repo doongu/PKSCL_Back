@@ -64,9 +64,8 @@ public class LedgerController {
     }
 
     @DeleteMapping(value = "/ledger")
-    public void deleteLedger(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+    public void deleteLedger(@RequestParam(value = "eventNumber", required = true) String eventNumber, HttpServletRequest request, HttpServletResponse response) {
         String position = (String) request.getSession(false).getAttribute("position");
-        String eventNumber = (String) body.get("eventNumber");
         String status = (String) request.getSession(false).getAttribute("status");
 
         // 403 Forbidden
