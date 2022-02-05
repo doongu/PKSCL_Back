@@ -45,9 +45,10 @@ public class SignUpController {
         student.setName(studentModel.getName());
         
         // file_name을 현재시간을 기준으로 yyyyMMddHHmmssSSS.jpg 형태로 설정
+        String dir = "./static/studentCertFile/";
         String filename = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
         String ext = certFile.getOriginalFilename().substring(certFile.getOriginalFilename().lastIndexOf("."));
-        student.setCertfilepath(filename+ext);
+        student.setCertfilepath(dir + filename + ext);
 
         //중복확인후 400반환
         if(!signUpService.studentCheckEmail(student.getEmail())) {

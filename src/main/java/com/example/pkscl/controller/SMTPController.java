@@ -1,5 +1,7 @@
 package com.example.pkscl.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SMTPController {
     
+    private static final String VERIFY_SUCCESS_MESSAGE = "<script>alert('이메일 인증이 완료되었습니다. 회원가입을 계속 진행해주세요.'); </script>";
+    private static final String VERIFY_FAIL_MESSAGE = "<script>alert('인증에 실패하였습니다.');</script>";
     private final SMTPService smtpService;
     private final SignUpService signUpService;
 
@@ -53,18 +57,39 @@ public class SMTPController {
     }
 
     @GetMapping(value = "/verify/token/{position}")
-    public void verifyToken(@RequestParam String token, @PathVariable String position, HttpServletResponse response) {
+    public void verifyToken(@RequestParam String token, @PathVariable String position, HttpServletResponse response) throws IOException {
         if(position.equals("student")){
             if(!smtpService.studentVerifyToken(token)){
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setContentType("text/html; charset=euc-kr");
+                PrintWriter out = response.getWriter();
+                // alert 창 확인시 창 닫기
+                out.println(VERIFY_FAIL_MESSAGE);
+                out.flush();
+                return;
             }
         }else if(position.equals("president")){
             if(!smtpService.presidentVerifyToken(token)){
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.setContentType("text/html; charset=euc-kr");
+                PrintWriter out = response.getWriter();
+                // alert 창 확인시 창 닫기
+                out.println(VERIFY_FAIL_MESSAGE);
+                out.flush();
+                return;
             }
         }else{
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setContentType("text/html; charset=euc-kr");
+            PrintWriter out = response.getWriter();
+            // alert 창 확인시 창 닫기
+            out.println(VERIFY_FAIL_MESSAGE);
+            out.flush();
+            return;
         }
+
+        response.setContentType("text/html; charset=euc-kr");
+        PrintWriter out = response.getWriter();
+        // alert 창 확인시 창 닫기
+        out.println(VERIFY_SUCCESS_MESSAGE);
+        out.flush();
     }
     
     // 임시 비밀번호 발급

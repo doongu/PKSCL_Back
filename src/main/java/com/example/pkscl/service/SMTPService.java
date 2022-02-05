@@ -85,8 +85,11 @@ public class SMTPService {
         // 토큰 및 url 생성
         String token = generateToken(toEmail, (2*1000*60));
         String subject = "회원가입 인증 메일입니다.";
-        String body = "https://pkscl.kro.kr/verify/token/"+ position +"/?token=" + token;
-
+        // 안내문구
+        String headInfo = "안녕하세요. PKSCL 관리자입니다.\n\n" + "회원가입을 위해 아래의 링크를 눌러주세요.\n\n";
+        String url = "https://pkscl.kro.kr/verify/token/"+ position +"/?token=" + token;
+        String tailInfo = "\n\n링크로 접속하시면 이메일 인증이 완료됩니다.\n\n" + "본 메일은 발신전용 메일입니다.\n\n";
+        String body = headInfo + url + tailInfo;
         // 이메일 정보 DB 저장
         if(position.equals("student")){
             StudentCertemail studentCertemail = new StudentCertemail();
@@ -104,25 +107,33 @@ public class SMTPService {
 
     // 토큰 인증
     public boolean studentVerifyToken(String token){
-        StudentCertemail certemail = studentCertemailRepository.findByEmail(decodeToken(token));
-        if(certemail == null){
+        try{
+            StudentCertemail certemail = studentCertemailRepository.findByEmail(decodeToken(token));
+            if(certemail == null){
+                return false;
+            }
+            // status를 1로 변경
+            certemail.setStatus(1);
+            studentCertemailRepository.save(certemail);
+            return true;
+        }catch(Exception e){
             return false;
         }
-        // status를 1로 변경
-        certemail.setStatus(1);
-        studentCertemailRepository.save(certemail);
-        return true;
     }
 
     public boolean presidentVerifyToken(String token){
-        PresidentCertemail certemail = presidentCertemailRepository.findByEmail(decodeToken(token));
-        if(certemail == null){
+        try{
+            PresidentCertemail certemail = presidentCertemailRepository.findByEmail(decodeToken(token));
+            if(certemail == null){
+                return false;
+            }
+            // status를 1로 변경
+            certemail.setStatus(1);
+            presidentCertemailRepository.save(certemail);
+            return true;
+        }catch(Exception e){
             return false;
         }
-        // status를 1로 변경
-        certemail.setStatus(1);
-        presidentCertemailRepository.save(certemail);
-        return true;
     }
 
     public Integer studentTempPassword(String email, String name, String studentId){

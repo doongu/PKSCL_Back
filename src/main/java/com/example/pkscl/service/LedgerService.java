@@ -135,13 +135,16 @@ public class LedgerService {
         List<Receipt> receiptList = receiptRepository.findByEventnumber(eventNumber);
         for(Receipt receipt : receiptList){
             LinkedHashMap<String, Object> receiptMap = new LinkedHashMap<>();
+            String receiptNumber = String.valueOf(receipt.getReceiptnumber());
             String receiptTitle = receipt.getReceipttitle();
+            LinkedHashMap<String, Object> filename = new LinkedHashMap<>();
             String receiptImg = receipt.getReceiptimg();
+            filename.put("name", receiptImg);
             String receiptContext = receipt.getReceiptcontext();
             List<Object> receiptdetailList = getReceiptDetailList(receipt.getReceiptnumber());
-
+            receiptMap.put("receiptNumber", receiptNumber);
             receiptMap.put("receiptTitle", receiptTitle);
-            receiptMap.put("receiptImg", receiptImg);
+            receiptMap.put("receiptImg", filename);
             receiptMap.put("receiptContext", receiptContext);
             receiptMap.put("receiptDetailList", receiptdetailList);
 
@@ -158,11 +161,16 @@ public class LedgerService {
             String context = receiptdetail.getContext();
             String price = receiptdetail.getPrice();
             String amount = receiptdetail.getAmount();
-            String totalAmount = Integer.parseInt(price) * Integer.parseInt(amount) + "";
             receiptdetailMap.put("context", context);
             receiptdetailMap.put("price", price);
             receiptdetailMap.put("amount", amount);
-            receiptdetailMap.put("totalAmount", totalAmount);
+            // price가 "" 이거나 amount가 "" 이면 totalAmount는 ""
+            if(price.equals("") || amount.equals("")){
+                receiptdetailMap.put("totalAmount", "");
+            }else{
+                String totalAmount = Integer.parseInt(price) * Integer.parseInt(amount) + "";
+                receiptdetailMap.put("totalAmount", totalAmount);
+            }
             result.add(receiptdetailMap);
         }
         return result;

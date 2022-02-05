@@ -122,7 +122,7 @@ public class SignInController {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    @DeleteMapping("/withdrawal")
+    @PostMapping("/withdrawal")
     public void secession(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         // 서비스 파라미터 설정
