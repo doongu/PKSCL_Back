@@ -101,7 +101,7 @@ public class ProfileService {
         profileData.setStudentid(stdID);
         profileData.setMajornumber(major);
         profileData.setName(name);
-        profileData.setCertfilepath( "/static/static/studentCertFile/" + certFilePath);
+        profileData.setCertfilepath( "./static/studentCertFile/" + certFilePath);
         studentRepository.save(profileData);
     }
 
@@ -111,7 +111,7 @@ public class ProfileService {
         profileData.setStudentid(stdID);
         profileData.setName(name);
         profileData.setPhonenumber(phoneNumber);
-        profileData.setMajorlogo( "/static/static/majorLogo/" + majorLogoPath);
+        profileData.setMajorlogo( "./static/majorLogo/" + majorLogoPath);
 
         presidentRepository.save(profileData);
     }
