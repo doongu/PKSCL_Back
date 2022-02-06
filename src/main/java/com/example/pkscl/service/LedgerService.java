@@ -12,8 +12,10 @@ import com.example.pkscl.domain.ledger.Quarter;
 import com.example.pkscl.domain.ledger.Receipt;
 import com.example.pkscl.domain.ledger.Receiptdetail;
 import com.example.pkscl.domain.major.Major;
+import com.example.pkscl.domain.member.President;
 import com.example.pkscl.repository.EventRepository;
 import com.example.pkscl.repository.MajorRepository;
+import com.example.pkscl.repository.PresidentRepository;
 import com.example.pkscl.repository.QuarterRepository;
 import com.example.pkscl.repository.ReceiptRepository;
 import com.example.pkscl.repository.ReceiptdetailRepository;
@@ -30,15 +32,17 @@ public class LedgerService {
     private final EventRepository eventRepository;
     private final ReceiptRepository receiptRepository;
     private final ReceiptdetailRepository receiptdetailRepository;
+    private final PresidentRepository presidentRepository;
     
     @Autowired
-    public LedgerService(MajorRepository majorRepository, QuarterRepository quarterRepository, EventRepository eventRepository, ReceiptRepository receiptRepository, ReceiptdetailRepository receiptdetailRepository) {
+    public LedgerService(MajorRepository majorRepository, QuarterRepository quarterRepository, EventRepository eventRepository, ReceiptRepository receiptRepository, ReceiptdetailRepository receiptdetailRepository, PresidentRepository presidentRepository) {
         this.majorRepository = majorRepository;
         this.quarterRepository = quarterRepository;
         this.eventRepository = eventRepository;
         this.receiptRepository = receiptRepository;
         this.receiptdetailRepository = receiptdetailRepository;
-    }
+        this.presidentRepository = presidentRepository;
+    }  
 
 
     public Map<String, Object> getLedgerData(String major, String position) {
@@ -57,11 +61,15 @@ public class LedgerService {
         String name = major.getName();
         String phoneNumber = major.getPhonenumber();
         String email = major.getEmail();
-
+        // String majorLogo = major.getMajorlogo();
+        President president = presidentRepository.findByEmail(email);
+        String majorLogo = president.getMajorlogo();
+        
         studentPresident.put("major", majorName);
         studentPresident.put("name", name);
         studentPresident.put("phoneNumber", phoneNumber);
         studentPresident.put("email", email);
+        studentPresident.put("majorLogo", majorLogo);
 
         return studentPresident;
     }
