@@ -52,7 +52,7 @@ public class ProfileService {
             String certfilepath = profileData.getCertfilepath();
 
             profileInfo.put("stdID", studentId);
-            profileInfo.put("major", majorName);
+            profileInfo.put("major", majorNumber);
             profileInfo.put("name", name);
             profileInfo.put("email", pEmail);
             profileInfo.put("majorLogo", certfilepath);
@@ -70,7 +70,7 @@ public class ProfileService {
             // String majorLogo = profileData.getMajorlogo();
 
             profileInfo.put("stdID", studentId);
-            profileInfo.put("major", majorName);
+            profileInfo.put("major", majorNumber);
             profileInfo.put("name", name);
             profileInfo.put("phoneNumber", phoneNumber);
             profileInfo.put("email", pEmail);
