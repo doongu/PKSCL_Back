@@ -43,38 +43,41 @@ public class ProfileService {
         // 학생을 리스트 형식으로 받아옴
         if(position == "student") {
             Student profileData = studentRepository.findByEmail(email);
-            Major major = majorRepository.findByMajornumber(majorNumber);
 
             String studentId = profileData.getStudentid();
-            String majorName = major.getMajorname();
             String name = profileData.getName();
             String pEmail = profileData.getEmail();
             String certfilepath = profileData.getCertfilepath();
+
+            LinkedHashMap<String, Object> certfile = new LinkedHashMap<>();
+            certfile.put("name", certfilepath);
 
             profileInfo.put("stdID", studentId);
             profileInfo.put("major", majorNumber);
             profileInfo.put("name", name);
             profileInfo.put("email", pEmail);
-            profileInfo.put("majorLogo", certfilepath);
+            profileInfo.put("certFile", certfile);
         }
 
         else if(position == "president"){
             President profileData = presidentRepository.findByEmail(email);
-            Major major = majorRepository.findByMajornumber(majorNumber);
+            Major major = majorRepository.findByMajornumber(Integer.parseInt(majorNumber));
 
             String studentId = profileData.getStudentid();
-            String majorName = major.getMajorname();
             String name = profileData.getName();
             String phoneNumber = profileData.getPhonenumber();
             String pEmail = profileData.getEmail();
-            // String majorLogo = profileData.getMajorlogo();
+            String majorLogo = major.getMajorlogo();
+
+            LinkedHashMap<String, Object> majorLogoMap = new LinkedHashMap<>();
+            majorLogoMap.put("name", majorLogo);
 
             profileInfo.put("stdID", studentId);
             profileInfo.put("major", majorNumber);
             profileInfo.put("name", name);
             profileInfo.put("phoneNumber", phoneNumber);
             profileInfo.put("email", pEmail);
-            // profileInfo.put("majorLogo", majorLogo);
+            profileInfo.put("majorLogo", majorLogoMap);
         }
 
         return profileInfo;
@@ -99,7 +102,10 @@ public class ProfileService {
         profileData.setStudentid(stdID);
         profileData.setMajornumber(major);
         profileData.setName(name);
-        profileData.setCertfilepath( "./static/studentCertFile/" + certFilePath);
+        profileData.setStatus("waiting");
+        if(certFilePath != null) {
+            profileData.setCertfilepath("./static/studentCertFile/"+certFilePath);
+        }
         studentRepository.save(profileData);
     }
 
@@ -109,9 +115,18 @@ public class ProfileService {
         profileData.setStudentid(stdID);
         profileData.setName(name);
         profileData.setPhonenumber(phoneNumber);
-        profileData.setMajorlogo( "./static/majorLogo/" + majorLogoPath);
-
+        if(profileData.getStatus().equals("refusal")) {
+            profileData.setStatus("waiting");
+        }
         presidentRepository.save(profileData);
+
+        if(majorLogoPath != null) {
+            int majorNumber = presidentRepository.findByEmail(email).getMajornumber();
+            Major major = majorRepository.findByMajornumber(majorNumber);
+            major.setMajorlogo("./static/majorLogo/" + majorLogoPath);
+            majorRepository.save(major);    
+        }
+
     }
 
     public String getStudentPassword(String email) {

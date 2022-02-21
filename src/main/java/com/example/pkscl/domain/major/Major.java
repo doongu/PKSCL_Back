@@ -10,10 +10,10 @@ import lombok.Data;
 public class Major {
 
     @Id
-    private String majornumber;
+    private int majornumber;
     private String majorname;
     private String majorstatus;
-    // private String majorlogo;
+    private String majorlogo;
     private String name;
     private String phonenumber;
     private String email;

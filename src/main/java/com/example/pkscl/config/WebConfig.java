@@ -1,5 +1,6 @@
 package com.example.pkscl.config;
 
+import com.example.pkscl.Interceptor.EditPageInterceptor;
 import com.example.pkscl.Interceptor.LoginCheckInterceptor;
 import com.example.pkscl.Interceptor.LoginPageInterceptor;
 
@@ -13,12 +14,15 @@ public class WebConfig implements WebMvcConfigurer{
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginCheckInterceptor())
+        registry.addInterceptor(new EditPageInterceptor())
         .order(1)
-        .addPathPatterns("/**")
-        .excludePathPatterns("/","/css/**", "/*.ico", "/error", "/login/**", "/signup/**","/signUp/**", "/major-list", "/index.html", "/static/**", "/*.json", "/*.css", "/*.js" , "/*.png", "/email/*", "/verify/**","/main/**", "/img/**");
-        registry.addInterceptor(new LoginPageInterceptor())
+        .addPathPatterns("/edit-main**");
+        registry.addInterceptor(new LoginCheckInterceptor())
         .order(2)
+        .addPathPatterns("/**")
+        .excludePathPatterns("/","/css/**", "/*.ico", "/error", "/login/**", "/signup/**","/signUp/**", "/major-list", "/index.html", "/static/**", "/*.json", "/*.css", "/*.js" , "/*.png", "/email/*", "/verify/**", "/img/**", "/newpwd/**");
+        registry.addInterceptor(new LoginPageInterceptor())
+        .order(3)
         .addPathPatterns("/", "");
     }
 

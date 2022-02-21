@@ -103,6 +103,9 @@ public class MemberManagementController {
             return;
         }
 
+        // 409 Conflict
+
+
         // 403 Forbidden
         if(!position.equals("admin")) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -111,8 +114,27 @@ public class MemberManagementController {
 
         // 서비스 호출
         for(String email : emailList) {
-            memberManagementService.patchPresidentStatus(email, patchStatus);
+            memberManagementService.patchPresidentStatus(email, patchStatus, response);
         }
+    }
+
+    @PatchMapping(value = "/major-president")
+    public void patchMajorPresident(@RequestBody Map<String, Object> body, HttpServletRequest request, HttpServletResponse response) {
+
+        // 서비스 파라미터 설정
+        String position = (String) request.getSession(false).getAttribute("position");
+        String majorNumber = (String) request.getSession(false).getAttribute("majorNumber");
+        String presidentEmail = (String) request.getSession(false).getAttribute("email");
+        String newPresidentEmail = (String) body.get("email");
+
+        // 403 Forbidden
+        if(!position.equals("president")) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        // 서비스 호출
+        memberManagementService.patchMajorPresident(presidentEmail, newPresidentEmail, majorNumber, response);
     }
 
 }

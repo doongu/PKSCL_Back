@@ -1,5 +1,4 @@
 package com.example.pkscl.service;
-import java.util.Optional;
 
 import com.example.pkscl.domain.member.Admin;
 import com.example.pkscl.domain.member.President;

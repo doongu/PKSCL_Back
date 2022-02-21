@@ -2,29 +2,25 @@ package com.example.pkscl.controller;
 
 import com.example.pkscl.domain.member.*;
 import com.example.pkscl.service.ProfileService;
-
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.List;
+
 
 @RestController
 public class ProfileController {
     private final ProfileService profileService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ProfileController(ProfileService profileService) {
+    public ProfileController(ProfileService profileService, PasswordEncoder passwordEncoder) {
         this.profileService = profileService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 학생 및 학과회장 정보로드
@@ -59,9 +55,8 @@ public class ProfileController {
 
         // 403
         if(studentProfileModel.getStdID().equals(null) || studentProfileModel.getMajor() == 0 ||
-                studentProfileModel.getName().equals(null)) {
+            studentProfileModel.getName().equals(null)) {
             Map<String,Object> errorMsg = new LinkedHashMap<>();
-//            errorMsg.put("errorMessage", "정보 변경에 실패하였습니다. 모든 정보를 입력해 주세요.");
             response.setStatus(403);
             return;
         }
@@ -73,12 +68,17 @@ public class ProfileController {
         int major =  studentProfileModel.getMajor();
         String name  = studentProfileModel.getName();
 
-        String filename = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
-        String ext = certFile.getOriginalFilename().substring(certFile.getOriginalFilename().lastIndexOf("."));
+        String fileName = null;
+
+        if(certFile != null) {
+            fileName = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
+            fileName = fileName + certFile.getOriginalFilename().substring(certFile.getOriginalFilename().lastIndexOf("."));
+            profileService.fileUploadStd(fileName, certFile);
+
+        }
 
         // 레포에 업데이트
-        profileService.fileUploadStd(filename+ext, certFile);
-        profileService.putStudentProfileData(email, stdID, major, name, filename+ext);
+        profileService.putStudentProfileData(email, stdID, major, name, fileName);
 
 
     }
@@ -88,9 +88,7 @@ public class ProfileController {
 
         // 403 Forbidden
         if(presidentProfileModel.getStdID().equals(null) || presidentProfileModel.getPhoneNumber().equals(null) ||
-                presidentProfileModel.getName().equals(null)) {
-//            Map<String,Object> errorMsg = new LinkedHashMap<>();
-//            errorMsg.put("errorMessage", "정보 변경에 실패하였습니다. 모든 정보를 입력해 주세요.");
+            presidentProfileModel.getName().equals(null)) {
             response.setStatus(403);
             return;
         }
@@ -102,11 +100,15 @@ public class ProfileController {
         String phoneNumber= presidentProfileModel.getPhoneNumber();
 
 
-        String filename = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
-        String ext = majorLogo.getOriginalFilename().substring(majorLogo.getOriginalFilename().lastIndexOf("."));
+        String fileName = null;
 
-        profileService.fileUploadLogo(filename+ext, majorLogo);
-        profileService.putPresidentProfileData(email, stdID, name, phoneNumber, filename+ext);
+        if(majorLogo != null) {
+            fileName = new java.text.SimpleDateFormat("yyyyMMddHHmmssSSS").format(new java.util.Date());
+            fileName = fileName + majorLogo.getOriginalFilename().substring(majorLogo.getOriginalFilename().lastIndexOf("."));
+            profileService.fileUploadLogo(fileName, majorLogo);
+
+        }
+        profileService.putPresidentProfileData(email, stdID, name, phoneNumber, fileName);
     }
 
     @PatchMapping(value = "/password")
@@ -126,7 +128,7 @@ public class ProfileController {
 
         else if(position.equals("student")){
         // 학생 기존 비번이랑 같은지 체크
-            if ( !inputPassword.equals(profileService.getStudentPassword(email))) {
+            if (!passwordEncoder.matches(inputPassword, profileService.getStudentPassword(email))) {
                 response.setStatus(401); return;
             }
             else profileService.patchStudentPassword(email, inputNewPassword);
@@ -134,7 +136,7 @@ public class ProfileController {
 
         else if(position.equals("president")){
         // 학생 기존 비번이랑 같은지 체크
-            if( !inputPassword.equals(profileService.getPresidentPassword(email) )) {
+            if(!passwordEncoder.matches(inputPassword, profileService.getPresidentPassword(email))) {
                 response.setStatus(401); return;
             }
             else profileService.patchPresidentPassword(email, inputNewPassword);

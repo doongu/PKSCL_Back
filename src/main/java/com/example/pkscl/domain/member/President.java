@@ -17,6 +17,5 @@ public class President {
     private String password;
     private String name;
     private String phonenumber;
-    private String majorlogo;
     private String status;
 }
