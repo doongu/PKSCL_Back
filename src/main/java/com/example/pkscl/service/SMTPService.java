@@ -183,4 +183,11 @@ public class SMTPService {
         presidentRepository.save(president);
         return 1;
     }
+
+    public boolean checkEmailForm(String email) {
+        // 이메일 형식 체크
+        //@pukyong.ac.kr 로 끝나지 않으면 false
+        if(!email.endsWith("@pukyong.ac.kr")) return false;
+        return true;
+    }
 }

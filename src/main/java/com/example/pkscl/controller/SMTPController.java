@@ -36,8 +36,14 @@ public class SMTPController {
     public void sendEmail(@RequestBody Map<String, Object> body, @PathVariable String position, HttpServletResponse response) {
 
         String email = (String) body.get("email");
-        // 중복확인
 
+        // 이메일 형식 확인
+        if (!smtpService.checkEmailForm(email)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return;
+        }
+
+        // 중복확인
         if(position.equals("student")){
             if(!signUpService.studentCheckEmail(email)) {
                 response.setStatus(HttpStatus.CONFLICT.value());
