@@ -10,7 +10,7 @@
  <h6>
      회장 인증이 되면 해당 학과의 Stage가 개설됩니다.
 	 이후에는 열람하고자 하는 학생을 관리하세요
-<p align="center"><img src="https://504019242-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F5EndMeoMRwmGLpjLCpAE%2Fuploads%2FDnU7Wjj89todBXW7Nhiu%2F%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202022-03-17%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%205.39.29.png?alt=media&token=2e441af8-4995-4096-9b95-d5b11b15425f" width="600" height="294"/></p>
+<p align="center"><img src="https://504019242-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F5EndMeoMRwmGLpjLCpAE%2Fuploads%2FDnU7Wjj89todBXW7Nhiu%2F%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202022-03-17%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%205.39.29.png?alt=media&token=2e441af8-4995-4096-9b95-d5b11b15425f" width="1024" height="200"/></p>
 </h6>
 
 
