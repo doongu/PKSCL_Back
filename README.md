@@ -1,7 +1,7 @@
 <h1>안녕하세요. 온라인 장부입니다.</h1>
 <h6> 기존 불편한 학생회비 장부 확인 시스템을 개선하고자 또한 투명한 장부공개 문화를 만들고자 온라인 장부 PKSCL를 만들게 되었습니다. </h6>
 
-<p align="center"><img src="./gif_for_read-me/uiux_1" width="600" height="294"/></p>
+<p align="center"><img src="https://504019242-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F5EndMeoMRwmGLpjLCpAE%2Fuploads%2Fa9iVEryJWFOWJl2c2gb8%2F%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202022-02-28%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%208.10.07.png?alt=media&token=2da2e163-e3f9-45d4-bc11-39823781d86a" width="600" height="294"/></p>
 
 <br></br>
 
