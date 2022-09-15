@@ -27,7 +27,7 @@
 
 <h2> 아래에서 프로젝트를 자세히 확인해보실 수 있어요 </h2>
 <h6>
- <p align = "center"><a href=https://doongu.gitbook.io/pkcog/"><img src="http://img.shields.io/badge/Gitbook-655ced?style=for-the-badge&color=informational" style="height : auto; margin-left : 10px; margin-right : 10px;"/></a> </p>
+ <p align = "center"><a href="https://doongu.gitbook.io/pkcog/"><img src="http://img.shields.io/badge/Gitbook-655ced?style=for-the-badge&color=informational" style="height : auto; margin-left : 10px; margin-right : 10px;"/></a> </p>
 
 
 
